@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    background: CornFlowerBlue;
+    overflow: hidden; /* no scroll bar */
+  }
+  
+  canvas {
+    width: 100%;
+    heigth: 100%;
+  }
+  
+  
