@@ -7,22 +7,26 @@ var renderer = new THREE.WebGLRenderer({
   antialias:true
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
+var loader = new THREE.TextureLoader();
 
 // Ground
 var geometry = new THREE.BoxGeometry(100, 0.1, 100)
-var material_ground = new THREE.MeshBasicMaterial( {color: 0x222222, wireframe: false})
+var floorTexture = loader.load('assets/floor.jpg')
+floorTexture.wrapT = THREE.RepeatWrapping;
+floorTexture.wrapS = THREE.RepeatWrapping;
+floorTexture.repeat.set( 100 , 100 );
+var material_ground = new THREE.MeshLambertMaterial({map: floorTexture})
 var ground = new THREE.Mesh(geometry, material_ground)
 scene.add(ground)
 
 // Light
 var light = new THREE.DirectionalLight(0xffffff, 1.0, 100)
-light.position.set(0, 20, 0)
+light.position.set(20, 20, 20)
 light.target.x = 0
 light.target.y = 0
 light.target.z = 0
 scene.add(light)
 
-var loader = new THREE.TextureLoader();
 var woodTexture = loader.load('assets/hardwood.jpg')
 var woodTextureNormal = loader.load('assets/hardwood_normal.jpg')
 
@@ -32,9 +36,6 @@ var mesaHeight = 3.5
 
 geometry = new THREE.BoxGeometry(mesaSize.x, mesaSize.y, mesaSize.z)
 material = new THREE.MeshPhongMaterial({
-  //color: 0xaaaaaa,
-  //specular: 0x333333,
-  //shininess: 15,
   map: woodTexture, 
   normalMap: woodTextureNormal
 })
