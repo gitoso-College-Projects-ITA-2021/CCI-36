@@ -11,6 +11,7 @@ function gen_spring(R, circle_steps, height, height_steps) {
         map: albedo,
         normalMap: normal,
     });
+    var distance = 0;
     for (let j = 0; j < height_steps; ++j) {
         theta = 0;
         for (let i = 0; i < circle_steps; ++i) {
@@ -19,9 +20,9 @@ function gen_spring(R, circle_steps, height, height_steps) {
             p2.y = R * Math.cos(theta);
             p2.z += step;
             var angle = p1.angleTo(p2);
-            var distance = p1.distanceTo(p2);
+            distance = p1.distanceTo(p2);
 
-            var geometry = new THREE.CylinderGeometry( 0.02, 0.02, distance, 6 );
+            var geometry = new THREE.CylinderGeometry( 0.01, 0.01, distance, 6 );
             geometry.rotateX( Math.PI / 2 );
 
             geometry.verticesNeedUpdate = true;
@@ -44,6 +45,29 @@ function gen_spring(R, circle_steps, height, height_steps) {
             p1.z = p2.z;
         }
     }
+    p2.x = 0;
+    p2.y = 0;
+    p2.z = height*1.2;
+    var radius = R * 1.5;
+    var geometry = new THREE.CylinderGeometry( 0.01, 0.01, radius, 6 );
+    geometry.rotateX( Math.PI / 2 );
+
+    geometry.verticesNeedUpdate = true;
+    geometry.elementsNeedUpdate = true;
+    geometry.normalsNeedUpdate = true;
+
+    var cylinder = new THREE.Mesh( geometry, material );
+    spring.children[spring.children.length - 1].add(cylinder);
+    cylinder.translateZ(distance/2);
+    cylinder.lookAt(p2);
+    cylinder.translateZ(radius/2);
+
+    var geometry = new THREE.SphereGeometry( R, 32, 32 );
+    //var material = new THREE.MeshBasicMaterial( {color: 0x000fff} );
+    var sphere = new THREE.Mesh( geometry, material );
+    cylinder.add(sphere);
+    sphere.translateZ(radius/2);
+    //sphere.translateY(-0.2);
     return spring;
 }
 

@@ -71,7 +71,7 @@ var spring2 = gen_spring_lines(r, circle_steps, h, height_steps);
 scene.add(spring);
 //scene.add(spring2);
 spring.rotateX(Math.PI/2);
-spring.position.set(0, mesaHeight + h + 0.5, 0);
+spring.position.set(0, mesaHeight + h + 2, 0);
 
 
 // Camera
