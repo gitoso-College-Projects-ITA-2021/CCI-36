@@ -83,7 +83,6 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var c = 2 * Math.PI * r;
 var deltac = 0;
 function animate() {  
-    renderer.render(scene, camera);
     requestAnimationFrame(animate);
 
     // Nao queria tah fazendo isso aqui
@@ -98,6 +97,7 @@ function animate() {
 
 
     controls.update();
+    renderer.render(scene, camera);
     t += 0.01;
     r -= 0.0008*Math.sin(t);
     deltac = c - 2 * Math.PI * r;
