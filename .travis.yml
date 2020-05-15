@@ -1,0 +1,8 @@
+install:
+    - curl https://raw.githubusercontent.com/back4app/parse-cli/back4app/installer.sh | sudo /bin/bash
+    - sudo apt-get -y update
+    - sudo apt-get install -y expect
+  
+after_success:
+    # Run the script that will make the deploy if the tests pass
+    - deploy/expect.exp
