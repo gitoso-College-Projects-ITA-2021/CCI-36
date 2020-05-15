@@ -80,7 +80,7 @@ function animate() {
     t += 0.1
 
     r -= 0.00008*Math.sin(t);
-    h += 0.0008*Math.sin(t);
+    h += 0.008*Math.sin(t);
     deltac = c - 2 * Math.PI * r;
 
   //mesa.rotation.y += 0.01
