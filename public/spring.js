@@ -22,21 +22,23 @@ function gen_spring(R, circle_steps, height, height_steps) {
             var distance = p1.distanceTo(p2);
 
             var geometry = new THREE.CylinderGeometry( 0.02, 0.02, distance, 6 );
+            geometry.rotateX( Math.PI / 2 );
+
             geometry.verticesNeedUpdate = true;
             geometry.elementsNeedUpdate = true;
             geometry.normalsNeedUpdate = true;
 
-            //var axis = new THREE.AxesHelper(0.5);
+            var axis = new THREE.AxesHelper(0.5);
             var cylinder = new THREE.Mesh( geometry, material );
-            //cylinder.add(axis);
+            cylinder.add(axis);
             spring.add( cylinder );
             cylinder.position.x = p1.x;
             cylinder.position.y = p1.y;
             cylinder.position.z = p1.z;
             cylinder.up.set(1, 0, 0);
             cylinder.lookAt(p2);
-            cylinder.rotateX(Math.PI/2);
-            cylinder.translateY(distance/2);
+            //cylinder.rotateX(Math.PI/2);
+            cylinder.translateZ(distance/2);
             p1.x = p2.x;
             p1.y = p2.y;
             p1.z = p2.z;
@@ -98,23 +100,29 @@ function update_spring(spring, R, circle_steps, height, height_steps) {
             p2.z += step;
             var distance = p1.distanceTo(p2);
             var geometry = new THREE.CylinderGeometry( 0.02, 0.02, distance, 4 );
+            geometry.rotateX( Math.PI / 2 );
             spring.children[idx].geometry.copy(geometry);
             //spring.children[idx].position.set(p1.x, p1.y, p1.z);
-            //spring.children[idx].rotation.x = 0;
-            //spring.children[idx].rotation.y = 0;
-            //spring.children[idx].rotation.z = 0;
+            spring.children[idx].rotation.x = 0;
+            spring.children[idx].rotation.y = 0;
+            spring.children[idx].rotation.z = 0;
             //spring.children[idx].rotateX(-Math.PI/2);
             spring.children[idx].position.x = p1.x;
             spring.children[idx].position.y = p1.y;
             spring.children[idx].position.z = p1.z;
-
-            //spring.children[idx].up.set(1, 0, 0);
-            spring.children[idx].lookAt(p2);
-            spring.children[idx].rotateX(Math.PI/2);
-            spring.children[idx].translateY(distance/2);
             p1.x = p2.x;
             p1.y = p2.y;
             p1.z = p2.z;
+            var p3 = new THREE.Vector3(p2.x, p2.y, p2.z);
+            p3.applyMatrix4(spring.matrix);
+            //spring.worldToLocal(p2);
+            //p2.add(spring.position);
+            //p2.applyEuler(spring.rotation);
+
+            spring.children[idx].up.set(1, 0, 0);
+            spring.children[idx].lookAt(p3);
+            //spring.children[idx].rotateX(Math.PI/2);
+            spring.children[idx].translateZ(distance/2);
             idx += 1;
         }
     }
