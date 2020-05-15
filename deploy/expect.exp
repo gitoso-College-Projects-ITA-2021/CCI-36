@@ -54,4 +54,8 @@ Account Key: "
 send -- $::env(B4AKEY)
 expect -exact $::env(B4AKEY)
 send -- "\r"
+expect "Would you like to create a new app"
+send -- "e\r"
+expect "Select an App to add to config"
+send -- "1\r"
 expect eof
