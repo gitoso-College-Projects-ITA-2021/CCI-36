@@ -1,5 +1,7 @@
 #!/bin/bash
-cd ..
-b4a configure accountkey
+pwd
+b4a configure accountkey -d
+b4a default CCI-36
 b4a deploy
 cd ..
+pwd
