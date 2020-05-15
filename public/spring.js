@@ -99,7 +99,7 @@ function update_spring(spring, R, circle_steps, height, height_steps) {
             p2.y = R * Math.cos(theta);
             p2.z += step;
             var distance = p2.distanceTo(p1);
-            var geometry = new THREE.CylinderGeometry( 0.01, 0.01, distance, 4 );
+            var geometry = new THREE.CylinderGeometry( 0.01, 0.01, distance * 1.05, 4 );
             geometry.rotateX( Math.PI / 2 );
             spring.children[idx].geometry.copy(geometry);
             //spring.children[idx].position.set(p1.x, p1.y, p1.z);

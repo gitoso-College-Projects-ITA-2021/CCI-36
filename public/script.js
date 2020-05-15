@@ -62,22 +62,20 @@ scene.add(mesa)
 
 //spring
 var r = 0.5;
-var h = 3;
+var h = 2;
 var t = 0;
-var circle_steps = 20;
+var circle_steps = 40;
 var height_steps = 10;
 var spring = gen_spring(r, circle_steps, h, height_steps);
 var spring2 = gen_spring_lines(r, circle_steps, h, height_steps);
 scene.add(spring);
 //scene.add(spring2);
 spring.rotateX(Math.PI/2);
-spring.position.set(0, mesaHeight + h + 2, 0);
-spring2.rotateX(Math.PI/2);
-spring2.position.set(0, mesaHeight + h + 2, 0);
+spring.position.set(0, mesaHeight + h + 0.5, 0);
 
 
 // Camera
-camera.position.set(0.5,  mesaHeight + h + 2, 10/8)
+camera.position.set(0.5,  mesaHeight + h + 3, 4)
 camera.lookAt(0,  mesaHeight + h + 2, 0)
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
