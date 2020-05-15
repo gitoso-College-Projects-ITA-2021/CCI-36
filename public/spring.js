@@ -28,9 +28,9 @@ function gen_spring(R, circle_steps, height, height_steps) {
             geometry.elementsNeedUpdate = true;
             geometry.normalsNeedUpdate = true;
 
-            var axis = new THREE.AxesHelper(0.5);
+            //var axis = new THREE.AxesHelper(0.5);
             var cylinder = new THREE.Mesh( geometry, material );
-            cylinder.add(axis);
+            //cylinder.add(axis);
             spring.add( cylinder );
             cylinder.position.x = p1.x;
             cylinder.position.y = p1.y;

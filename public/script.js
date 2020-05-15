@@ -70,8 +70,8 @@ var spring = gen_spring(r, circle_steps, h, height_steps);
 var spring2 = gen_spring_lines(r, circle_steps, h, height_steps);
 scene.add(spring);
 //scene.add(spring2);
-spring.rotateX(Math.PI/2);
-spring.position.set(0, mesaHeight + h + 2, 0);
+//spring.rotateX(Math.PI/2);
+//spring.position.set(0, mesaHeight + h + 2, 0);
 spring2.rotateX(Math.PI/2);
 spring2.position.set(0, mesaHeight + h + 2, 0);
 
@@ -86,15 +86,9 @@ var deltac = 0;
 function animate() {  
     requestAnimationFrame(animate);
 
-    // Nao queria tah fazendo isso aqui
-    spring.position.set(0, 0, 0);
-    spring.rotateX(-Math.PI/2);
 
     update_spring(spring, r, circle_steps, h, height_steps);
     //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
-
-    spring.rotateX(Math.PI/2);
-    spring.position.set(0, mesaHeight + h + 2, 0);
 
 
     controls.update();
