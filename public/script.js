@@ -1,6 +1,6 @@
 // Three.js setup
 var scene = new THREE.Scene()
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000)
 var renderer = new THREE.WebGLRenderer({
   canvas:document.getElementById("main-canvas"),
   alpha:false,
@@ -8,6 +8,18 @@ var renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
 var loader = new THREE.TextureLoader()
+
+// Enviroment
+var loader_cube = new THREE.CubeTextureLoader();
+
+var textureCube = loader_cube.load( [
+        'assets/cubemap/px.png', 'assets/cubemap/nx.png',
+        'assets/cubemap/py.png', 'assets/cubemap/ny.png',
+        'assets/cubemap/pz.png', 'assets/cubemap/nz.png'
+] );
+
+scene.background = textureCube;
+scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
 
 // Ground
 var geometry = new THREE.BoxGeometry(100, 0.1, 100)
