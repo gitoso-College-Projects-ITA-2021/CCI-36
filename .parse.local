@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "CCI-36": {
+      "applicationId": "uivl1V49YWdTmI9my6et0ognfYpb3p3SygOWrRen"
+    },
+    "_default": {
+      "link": "CCI-36"
+    }
+  }
+}
