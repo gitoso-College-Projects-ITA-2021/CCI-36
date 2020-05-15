@@ -73,6 +73,10 @@ scene.add(spring);
 spring.rotateX(Math.PI/2);
 spring.position.set(0, mesaHeight + h + 2, 0);
 
+var turtle = generate_tree();
+scene.add(turtle);
+turtle.position.set(5, mesaHeight + 0.5, 0);
+
 
 // Camera
 camera.position.set(0.5,  mesaHeight + h + 3, 4)
