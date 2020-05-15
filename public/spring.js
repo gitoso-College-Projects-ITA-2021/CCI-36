@@ -71,6 +71,72 @@ function gen_spring(R, circle_steps, height, height_steps) {
     return spring;
 }
 
+function gen_spring_tube(R, circle_steps, height, height_steps) {
+    function CustomSinCurve( scale ) {
+
+        THREE.Curve.call( this );
+
+        this.scale = ( scale === undefined ) ? 1 : scale;
+
+    }
+
+    CustomSinCurve.prototype = Object.create( THREE.Curve.prototype );
+    CustomSinCurve.prototype.constructor = CustomSinCurve;
+
+    CustomSinCurve.prototype.getPoint = function ( t ) {
+
+        var tx = R * Math.sin( 20 * Math.PI * t );
+        var ty = R * Math.cos( 20 * Math.PI * t );
+        var tz = height * t;
+
+        return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+
+    };
+    var albedo = new THREE.TextureLoader().load("assets/Metal008_2K_Color.jpg");
+    var normal = new THREE.TextureLoader().load("assets/Metal008_2K_Normal.jpg");
+    var material = new THREE.MeshPhongMaterial({
+        map: albedo,
+        normalMap: normal,
+    });
+
+    var path = new CustomSinCurve( 1 );
+    var geometry = new THREE.TubeBufferGeometry( path, 200, 0.01, 8, false );
+    geometry.verticesNeedUpdate = true;
+    geometry.elementsNeedUpdate = true;
+    geometry.normalsNeedUpdate = true;
+    var mesh = new THREE.Mesh( geometry, material );
+    var spring = new THREE.Mesh();
+    spring.add(mesh);
+
+    var p2 = new THREE.Vector3();
+    p2.x = 0;
+    p2.y = 0;
+    p2.z = height*1.2;
+    var radius = R * 1.5;
+    var geometry = new THREE.CylinderGeometry( 0.01, 0.01, radius, 6 );
+    geometry.rotateX( Math.PI / 2 );
+
+    geometry.verticesNeedUpdate = true;
+    geometry.elementsNeedUpdate = true;
+    geometry.normalsNeedUpdate = true;
+
+    var cylinder = new THREE.Mesh( geometry, material );
+    var pos = path.getPoint(1);
+    cylinder.position.copy(pos);
+    spring.add(cylinder);
+    cylinder.rotateX(Math.PI/3);
+    cylinder.translateZ(radius/2);
+    //cylinder.translateZ(path.getPoint(1));
+    //cylinder.translateZ(distance/2);
+    //cylinder.lookAt(p2);
+
+    var geometry = new THREE.SphereGeometry( R, 32, 32 );
+    var sphere = new THREE.Mesh( geometry, material );
+    cylinder.add(sphere);
+    sphere.translateZ(radius/2);
+    return spring;
+}
+
 function gen_spring_lines(R, circle_steps, height, height_steps) {
     var spring = new THREE.Mesh();
     var theta = 0;
@@ -177,4 +243,38 @@ function update_spring_line(spring, R, circle_steps, height, height_steps) {
     }
     var geometry = new THREE.BufferGeometry().setFromPoints( points );
     spring.children[0].geometry.copy(geometry);
+}
+
+function CustomCurve( scale, R, height ) {
+
+    THREE.Curve.call( this );
+    this.R = R;
+    this.height = height;
+    this.scale = ( scale === undefined ) ? 1 : scale;
+
+}
+
+CustomCurve.prototype = Object.create( THREE.Curve.prototype );
+CustomCurve.prototype.constructor = CustomCurve;
+
+CustomCurve.prototype.getPoint = function ( t ) {
+
+    var tx = this.R * Math.sin( 20 * Math.PI * t );
+    var ty = this.R * Math.cos( 20 * Math.PI * t );
+    var tz = this.height * t;
+
+    return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+
+};
+
+
+function update_spring_tube(spring, R, circle_steps, height, height_steps) {
+    var path = new CustomCurve( 1, R, height );
+    var geometry = new THREE.TubeBufferGeometry( path, 200, 0.01, 8, false );
+    spring.children[0].geometry.copy(geometry);
+    var pos = path.getPoint(1);
+    spring.children[1].position.copy(pos);
+    var radius = R * 1.5;
+    spring.children[1].translateZ(radius/2);
+
 }
