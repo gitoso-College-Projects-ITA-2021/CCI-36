@@ -87,14 +87,16 @@ function animate() {
     requestAnimationFrame(animate);
 
 
-    update_spring(spring, r, circle_steps, h, height_steps);
+    update_spring(spring, r, circle_steps, h + deltac, height_steps);
     //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
 
 
     controls.update();
     renderer.render(scene, camera);
-    t += 0.01;
+    t += 0.1;
+
     r -= 0.0008*Math.sin(t);
+    h += 0.008*Math.sin(t);
     deltac = c - 2 * Math.PI * r;
 
   //mesa.rotation.y += 0.01;
