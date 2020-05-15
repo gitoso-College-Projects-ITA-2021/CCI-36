@@ -59,14 +59,50 @@ mesa.add(pe3)
 mesa.add(pe4)
 scene.add(mesa)
 
-// Camera
-camera.position.set(15, 15, 15)
-camera.lookAt(0, 0, 0)
+//spring
+var r = 0.5;
+var h = 3;
+var t = 0;
+var circle_steps = 20;
+var height_steps = 10;
+var spring = gen_spring(r, circle_steps, h, height_steps);
+var spring2 = gen_spring_lines(r, circle_steps, h, height_steps);
+scene.add(spring);
+//scene.add(spring2);
+spring.rotateX(Math.PI/2);
+spring.position.set(0, mesaHeight + h + 2, 0);
+spring2.rotateX(Math.PI/2);
+spring2.position.set(0, mesaHeight + h + 2, 0);
 
+
+// Camera
+camera.position.set(0.5,  mesaHeight + h + 2, 10/8)
+camera.lookAt(0,  mesaHeight + h + 2, 0)
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+var c = 2 * Math.PI * r;
+var deltac = 0;
 function animate() {  
-  renderer.render(scene, camera)
-  requestAnimationFrame(animate)
-  mesa.rotation.y += 0.01
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+
+    // Nao queria tah fazendo isso aqui
+    spring.position.set(0, 0, 0);
+    spring.rotateX(-Math.PI/2);
+
+    update_spring(spring, r, circle_steps, h, height_steps);
+    //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
+
+    spring.rotateX(Math.PI/2);
+    spring.position.set(0, mesaHeight + h + 2, 0);
+
+
+    controls.update();
+    t += 0.01;
+    r -= 0.0008*Math.sin(t);
+    deltac = c - 2 * Math.PI * r;
+
+  //mesa.rotation.y += 0.01;
 }
 
 animate()
