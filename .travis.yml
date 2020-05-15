@@ -7,5 +7,4 @@ deploy:
     provider: script
     script: deploy/expect.exp
     on:
-        branch: develop
-      
+        branch: master
