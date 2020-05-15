@@ -54,7 +54,7 @@ var turtle = generate_tree()
 scene.add(turtle)
 turtle.position.set(5, mesaHeight + 1, 0)
 
-var vase = generate_vase()
+var vase = generate_vase(0.5, 0.4, 1)
 vase.position.y = mesaHeight + 0.5
 vase.position.x = turtle.position.x
 vase.position.z = turtle.position.z
