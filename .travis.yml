@@ -1,14 +1,20 @@
 language: node_js
 node_js:
   - 7
+cache: false
+sudo: true
 
 install:
     - curl https://raw.githubusercontent.com/back4app/parse-cli/back4app/installer.sh | sudo /bin/bash
     - sudo apt-get -y update
     - sudo apt-get install -y expect
+
+script:
+    - echo "skipping tests"
   
 deploy:
     provider: script
+    skip_cleanup: true
     script: deploy/expect.exp
     on:
-        branch: master
+        branch: auto-deploy
