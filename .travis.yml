@@ -1,3 +1,7 @@
+language: node_js
+node_js:
+  - 7
+
 install:
     - curl https://raw.githubusercontent.com/back4app/parse-cli/back4app/installer.sh | sudo /bin/bash
     - sudo apt-get -y update
