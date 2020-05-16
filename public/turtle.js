@@ -6,7 +6,7 @@ var turtle_stack = [];
 
 var albedo = new THREE.TextureLoader().load("assets/Bark008_2K_Color.jpg");
 var normal = new THREE.TextureLoader().load("assets/Bark008_2K_Normal.jpg");
-var material = new THREE.MeshPhongMaterial({
+var tree_mat = new THREE.MeshPhongMaterial({
     map: albedo,
     normalMap: normal,
 });
@@ -53,7 +53,7 @@ function turtle_interpreter(turtle, scene, symbol, theta) {
             pos = t.position;
             var geometry = new THREE.CylinderBufferGeometry( turtle.begin_radius, turtle.end_radius, turtle.step_dis, 5 );
             //var material = new THREE.MeshBasicMaterial( {color: 0x11ff11} );
-            var cylinder = new THREE.Mesh( geometry, material );
+            var cylinder = new THREE.Mesh( geometry, tree_mat );
             cylinder.position.copy(pos);
             cylinder.rotation.set(t.rotation.x, t.rotation.y, t.rotation.z);
             // Correct cylinder rotation
@@ -77,16 +77,15 @@ function turtle_interpreter(turtle, scene, symbol, theta) {
     }
 }
 
-function generate_tree() {
+function generate_tree(mul, depth) {
     var tu = new THREE.Mesh();
     var turtle = new THREE.Object3D();
-    let mul = 6.0;
-    turtle.step_dis = 0.1/4*mul;
+    turtle.step_dis = 0.1/6*mul;
     turtle.position = new THREE.Vector3();
     turtle.rotateX(-Math.PI/2);
     turtle.end_radius = 0.2/8.0/8*mul;
     turtle.begin_radius = 0.1/8.0/8*mul;
-    var string = generate_string(5);
+    var string = generate_string(depth);
     //var string = 'F[/+F]+-F';
     console.log(string)
     console.log(string.length)

@@ -2,7 +2,7 @@ var rule = new Map()
 rule.set('F' , "FF");
 rule.set('A' , "B-F+CFC+F-D&F^D-F+&&CFC+F+B//");
 rule.set('B' , "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//");
-rule.set('C' , "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//");
+rule.set('C' , "|D^|F^B-F+C^F^AC&&FA&F^C+F+B^F^D//");
 rule.set('D' , "|CFB-F+B|FA&F^A&&FB-F+B|FC//");
 
 var rule2 = new Map();
