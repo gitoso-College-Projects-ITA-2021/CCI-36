@@ -18,7 +18,7 @@ function generate_vase(r1, r2, h) {
     // Internal earth
     texture =  new THREE.TextureLoader().load('assets/earth.png')
 
-    geometry = new THREE.CylinderGeometry( r1 - 0.005, r2 - 0.005, h + 0.005, 20 );
+    geometry = new THREE.CylinderGeometry( r1 - 0.15*r1, r2 - 0.15*r2, h + 0.005, 20 );
     material = new THREE.MeshLambertMaterial( {map: texture} );
     var earth = new THREE.Mesh( geometry, material );
 
