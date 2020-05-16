@@ -79,21 +79,21 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement)
 
 var c = 2 * Math.PI * r
 var deltac = 0
+var ry = spring.rotation.y;
 function animate() {  
     requestAnimationFrame(animate)
 
 
     //update_spring(spring, r, circle_steps, h + deltac, height_steps);
     //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
-    update_spring_tube(spring, r, circle_steps, h + deltac, height_steps);
+    update_spring_tube(spring, r + 0.15*r*Math.sin(t), circle_steps, h + 0.10*h*Math.sin(t)+ deltac, height_steps);
+    spring.rotation.y = ry + Math.PI/6 * Math.cos(t);
 
     controls.update()
     renderer.render(scene, camera)
     t += 0.1
 
-    r -= 0.00008*Math.sin(t);
-    h += 0.008*Math.sin(t);
-    deltac = c - 2 * Math.PI * r;
+    deltac = c - 2 * Math.PI * (r + 0.15 * r * Math.sin(t));
 
   //mesa.rotation.y += 0.01
 }
