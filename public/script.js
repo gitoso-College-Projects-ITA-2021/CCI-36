@@ -50,13 +50,13 @@ mesa = generateTable(mesaSize, mesaHeight)
 scene.add(mesa)
 
 //spring
-var r = 0.5;
+var r = 0.2;
 var h = 2;
 var t = 0;
 //spring support
-var width = 5 * r;
-var heigth = 5 * r;
-var depth = r / 2;
+var width = 2.5;
+var heigth = 2.5;
+var depth = 0.25;
 var spring_support = new THREE.Mesh();
 spring_support.translateY(mesaHeight + h + 2);
 var box_geometry = new THREE.BoxGeometry(width, depth, heigth);
@@ -67,7 +67,7 @@ spring_support.add(base);
 spring_support.add(topp);
 base.translateY(-(h + 1.5));
 // Parafuso
-var geom_par_top = new THREE.CylinderGeometry( width*0.25, width*0.25, (h + 2) * 0.1, 5 );
+var geom_par_top = new THREE.CylinderGeometry( width*0.25, width*0.25, depth * 2.5, 5 );
 var mat_par = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 var parafuso1 = new THREE.Mesh(geom_par_top, mat_par);
 var geom_par = new THREE.CylinderGeometry( width*0.05, width*0.05, (h + 2) * 0.1, 5 );
@@ -76,7 +76,7 @@ var parafuso3 = new THREE.Mesh(geom_par, mat_par);
 var parafuso4 = new THREE.Mesh(geom_par, mat_par);
 var parafuso5 = new THREE.Mesh(geom_par, mat_par);
 topp.add(parafuso1);
-parafuso1.translateY(width*0.05);
+//parafuso1.translateY(width*0.05);
 
 var geometry = new THREE.CylinderGeometry( width*0.02, width*0.02, h + 2, 32 );
 var mat_cylinder = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
@@ -164,7 +164,7 @@ function animate() {
 
     //update_spring(spring, r, circle_steps, h + deltac, height_steps);
     //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
-    update_spring_tube(spring, r + 0.15*r*Math.sin(t), circle_steps, h + 0.10*h*Math.sin(t)+ deltac, height_steps);
+    update_spring_tube(spring, r + 0.15*r*Math.sin(t), circle_steps, h + 0.20*h*Math.sin(t)+ deltac, height_steps);
     spring.rotation.y = ry + Math.PI/6 * Math.cos(t);
 
     controls.update()
