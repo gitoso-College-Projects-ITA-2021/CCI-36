@@ -75,6 +75,10 @@ var parafuso2 = new THREE.Mesh(geom_par, mat_par);
 var parafuso3 = new THREE.Mesh(geom_par, mat_par);
 var parafuso4 = new THREE.Mesh(geom_par, mat_par);
 var parafuso5 = new THREE.Mesh(geom_par, mat_par);
+var parafuso2b = new THREE.Mesh(geom_par, mat_par);
+var parafuso3b = new THREE.Mesh(geom_par, mat_par);
+var parafuso4b = new THREE.Mesh(geom_par, mat_par);
+var parafuso5b = new THREE.Mesh(geom_par, mat_par);
 topp.add(parafuso1);
 //parafuso1.translateY(width*0.05);
 
@@ -89,6 +93,10 @@ topp.add(parafuso2);
 parafuso2.translateY(width*0.05);
 parafuso2.translateX(width/2 - width*0.05);
 parafuso2.translateZ(heigth/2 - width*0.05);
+base.add(parafuso2b);
+parafuso2b.translateY(width*0.05);
+parafuso2b.translateX(width/2 - width*0.05);
+parafuso2b.translateZ(heigth/2 - width*0.05);
 
 var cylinder2 = new THREE.Mesh( geometry, mat_cylinder );
 base.add(cylinder2);
@@ -99,6 +107,10 @@ topp.add(parafuso3);
 parafuso3.translateY(width*0.05);
 parafuso3.translateX(-width/2 + width*0.05);
 parafuso3.translateZ(heigth/2 - width*0.05);
+base.add(parafuso3b);
+parafuso3b.translateY(width*0.05);
+parafuso3b.translateX(-width/2 + width*0.05);
+parafuso3b.translateZ(heigth/2 - width*0.05);
 
 var cylinder3 = new THREE.Mesh( geometry, mat_cylinder );
 base.add(cylinder3);
@@ -109,6 +121,10 @@ topp.add(parafuso4);
 parafuso4.translateY(width*0.05);
 parafuso4.translateX(-width/2 + width*0.05);
 parafuso4.translateZ(-heigth/2 + width*0.05);
+base.add(parafuso4b);
+parafuso4b.translateY(width*0.05);
+parafuso4b.translateX(-width/2 + width*0.05);
+parafuso4b.translateZ(-heigth/2 + width*0.05);
 
 var cylinder4 = new THREE.Mesh( geometry, mat_cylinder );
 base.add(cylinder4);
@@ -119,6 +135,10 @@ topp.add(parafuso5);
 parafuso5.translateY(width*0.05);
 parafuso5.translateX(width/2 - width*0.05);
 parafuso5.translateZ(-heigth/2 + width*0.05);
+base.add(parafuso5b);
+parafuso5b.translateY(width*0.05);
+parafuso5b.translateX(width/2 - width*0.05);
+parafuso5b.translateZ(-heigth/2 + width*0.05);
 
 scene.add(spring_support);
 
