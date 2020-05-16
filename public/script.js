@@ -13,9 +13,9 @@ var loader = new THREE.TextureLoader()
 var loader_cube = new THREE.CubeTextureLoader();
 
 var textureCube = loader_cube.load( [
-        'assets/cubemap/px.png', 'assets/cubemap/nx.png',
-        'assets/cubemap/py.png', 'assets/cubemap/ny.png',
-        'assets/cubemap/pz.png', 'assets/cubemap/nz.png'
+        'assets/skybox_space/nx.png', 'assets/skybox_space/px.png',
+        'assets/skybox_space/py.png', 'assets/skybox_space/ny.png',
+        'assets/skybox_space/pz.png', 'assets/skybox_space/nz.png',
 ] );
 
 scene.background = textureCube;
