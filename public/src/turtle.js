@@ -87,8 +87,8 @@ function generate_tree(mul, depth) {
     turtle.begin_radius = 0.1/8.0/8*mul;
     var string = generate_string(depth);
     //var string = 'F[/+F]+-F';
-    console.log(string)
-    console.log(string.length)
+    //console.log(string)
+    //console.log(string.length)
     for (let i = 0, n = string.length; i < n; ++i) {
         turtle_interpreter(turtle, tu, string[i], Math.PI*22.5/180.0);
     }

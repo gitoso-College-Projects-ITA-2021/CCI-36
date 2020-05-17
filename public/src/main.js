@@ -60,7 +60,16 @@ var depth = 0.25;
 var spring_support = new THREE.Mesh();
 spring_support.translateY(mesaHeight + h + 2);
 var box_geometry = new THREE.BoxGeometry(width, depth, heigth);
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var albedo = new THREE.TextureLoader().load("assets/Metal012_2K_Color.jpg");
+var roughness = new THREE.TextureLoader().load("assets/Metal012_2K_Roughness.jpg");
+var metalness = new THREE.TextureLoader().load("assets/Metal012_2K_Metalness.jpg");
+var normal = new THREE.TextureLoader().load("assets/Metal012_2K_Normal.jpg");
+var material = new THREE.MeshStandardMaterial({
+    map: albedo,
+    roughness: 0.0,
+    metalness: 0.5,
+    normalMap: normal,
+});
 var base = new THREE.Mesh( box_geometry, material );
 var topp = new THREE.Mesh( box_geometry, material );
 spring_support.add(base);
@@ -68,7 +77,12 @@ spring_support.add(topp);
 base.translateY(-(h + 1.5));
 // Parafuso
 var geom_par_top = new THREE.CylinderGeometry( width*0.25, width*0.25, depth * 2.5, 5 );
-var mat_par = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var albedo = new THREE.TextureLoader().load("assets/Metal029_2K_Color.jpg");
+var normal = new THREE.TextureLoader().load("assets/Metal029_2K_Normal.jpg");
+var mat_par = new THREE.MeshPhongMaterial({
+    map: albedo,
+    normalMap: normal,
+});
 var parafuso1 = new THREE.Mesh(geom_par_top, mat_par);
 var geom_par = new THREE.CylinderGeometry( width*0.05, width*0.05, (h + 2) * 0.1, 5 );
 var parafuso2 = new THREE.Mesh(geom_par, mat_par);
@@ -83,7 +97,12 @@ topp.add(parafuso1);
 //parafuso1.translateY(width*0.05);
 
 var geometry = new THREE.CylinderGeometry( width*0.02, width*0.02, h + 2, 32 );
-var mat_cylinder = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
+var albedo = new THREE.TextureLoader().load("assets/Metal003_2K_Color.jpg");
+var normal = new THREE.TextureLoader().load("assets/Metal003_2K_Normal.jpg");
+var mat_cylinder = new THREE.MeshPhongMaterial({
+    map: albedo,
+    normalMap: normal,
+});
 var cylinder1 = new THREE.Mesh( geometry, mat_cylinder );
 base.add(cylinder1);
 cylinder1.translateY((h + 2)/2);
@@ -171,29 +190,66 @@ gen_vase_tree(new THREE.Vector3(6, mesaHeight + 0.5, 4), 5, 8);
 
 
 // Camera
-camera.position.set(0.5,  mesaHeight + h + 3, 4)
-camera.lookAt(0,  mesaHeight + h + 2, 0)
+camera.position.set(0.0,  mesaHeight + h + 2 , 10)
+camera.lookAt(0,  mesaHeight + h + 5, 0)
 var controls = new THREE.OrbitControls(camera, renderer.domElement)
 
-var c = 2 * Math.PI * r
-var deltac = 0
 var ry = spring.rotation.y;
+
+var params = new Object();
+params.m = 30;
+params.k = 1000;
+params.l0 = h;
+params.g = 10;
+var y = [h*0.02, 0, Math.PI/30, 0];
+var dydt = [0, 0, 0, 0];
+var yout = [0, 0, 0, 0];
+var last_time = Date.now();
+var dt = 0;
+var count = 0;
+var reset = 0;
+var ball_points = [];
+var trail_geom = new THREE.BufferGeometry().setFromPoints(ball_points);
+trail_geom.verticesNeedUpdate = true;
+trail_geom.elementsNeedUpdate = true;
+trail_geom.normalsNeedUpdate = true;
+var trail_mat = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+var trail = new THREE.Line(trail_geom, trail_mat );
+scene.add(trail);
 function animate() {  
     requestAnimationFrame(animate)
+    derivs(0, y, dydt, params);
+    rk4(y, dydt, 0, dt, yout, derivs, params);
 
-
-    //update_spring(spring, r, circle_steps, h + deltac, height_steps);
-    //update_spring_line(spring2, r, circle_steps, h + deltac, height_steps);
-    update_spring_tube(spring, r + 0.15*r*Math.sin(t), circle_steps, h + 0.20*h*Math.sin(t)+ deltac, height_steps);
-    spring.rotation.y = ry + Math.PI/6 * Math.cos(t);
+    update_spring_tube(spring, r - yout[0]*0.15, circle_steps, h + yout[0], height_steps);
+    spring.rotation.y = ry + yout[2];
+    y = yout.slice();
 
     controls.update()
     renderer.render(scene, camera)
-    t += 0.1
+    count += 1;
+    reset += 1;
 
-    deltac = c - 2 * Math.PI * (r + 0.15 * r * Math.sin(t));
+    var ball = spring.children[spring.children.length - 1].children[0];
+    var pos = new THREE.Vector3(ball.position.x, ball.position.y, ball.position.z);
+    ball_points.push(ball.localToWorld(pos));
+    var trail_geom = new THREE.BufferGeometry().setFromPoints(ball_points);
+    trail.geometry.copy(trail_geom);
+    if (ball_points.length > 100)
+        ball_points.length = 0;
+    if (reset > 200) {
+        reset = 0;
+        y = [h*0.02, 0, Math.PI/30, 0];
+        dydt = [0, 0, 0, 0];
+        yout = [0, 0, 0, 0];
+    }
+    dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
+    //dt = (Date.now() - last_time)/1000;
+    //dt = Math.min(Math.max(dt, 0.01), 0.10);
+    //dt = 0.04;
+    last_time = Date.now();
+    console.log(dt);
 
-  //mesa.rotation.y += 0.01
 }
 
 animate()
