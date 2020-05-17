@@ -22,7 +22,8 @@ scene.background = textureCube;
 scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
 
 // Ground
-var geometry = new THREE.BoxGeometry(100, 0.1, 100)
+const gound_size = {x: 100, y: 0.1, z: 100}
+var geometry = new THREE.BoxGeometry(gound_size.x, gound_size.y, gound_size.z)
 var floorTexture = loader.load('assets/floor.jpg')
 floorTexture.wrapT = THREE.RepeatWrapping
 floorTexture.wrapS = THREE.RepeatWrapping
@@ -30,6 +31,32 @@ floorTexture.repeat.set( 100 , 100 )
 var material_ground = new THREE.MeshLambertMaterial({map: floorTexture})
 var ground = new THREE.Mesh(geometry, material_ground)
 scene.add(ground)
+
+// Wall
+const wall_dimentions = {width: 2,hight: 5,depth: gound_size.z}
+var wall_geometry = new THREE.BoxGeometry(wall_dimentions.width, wall_dimentions.hight, wall_dimentions.depth - wall_dimentions.width)
+var wallTexture = new THREE.TextureLoader().load('assets/bricks.jpg')
+wallTexture.wrapT = THREE.RepeatWrapping
+wallTexture.wrapS = THREE.RepeatWrapping
+wallTexture.repeat.set( 1 , 100 )
+const deltax = gound_size.x/2 - wall_dimentions.width/2
+const deltaz = wall_dimentions.width/2
+var wall_material = new THREE.MeshPhongMaterial({map: wallTexture})
+var wall1 = new THREE.Mesh(wall_geometry, wall_material)
+wall1.position.set(deltax, wall_dimentions.hight/2, deltaz)
+var wall2 = new THREE.Mesh(wall_geometry, wall_material)
+wall2.rotateY(THREE.Math.degToRad(90))
+wall2.position.set(deltaz, wall_dimentions.hight/2, -deltax)
+var wall3 = new THREE.Mesh(wall_geometry, wall_material)
+wall3.rotateY(THREE.Math.degToRad(180))
+wall3.position.set(-deltax, wall_dimentions.hight/2, -deltaz)
+var wall4 = new THREE.Mesh(wall_geometry, wall_material)
+wall4.rotateY(THREE.Math.degToRad(270))
+wall4.position.set(-deltaz, wall_dimentions.hight/2, deltax)
+ground.add(wall1) 
+ground.add(wall2) 
+ground.add(wall3) 
+ground.add(wall4) 
 
 // Light
 var light = new THREE.DirectionalLight(0xffffff, 1.0, 100)
