@@ -35,13 +35,36 @@ scene.add(ground)
 // Wall
 const wall_dimentions = {width: 2,hight: 5,depth: gound_size.z}
 var wall_geometry = new THREE.BoxGeometry(wall_dimentions.width, wall_dimentions.hight, wall_dimentions.depth - wall_dimentions.width)
-var wallTexture = new THREE.TextureLoader().load('assets/bricks.jpg')
-wallTexture.wrapT = THREE.RepeatWrapping
-wallTexture.wrapS = THREE.RepeatWrapping
-wallTexture.repeat.set( 1 , 100 )
+
+var wallTextureTop = new THREE.TextureLoader().load('assets/wall_top.jpg')
+wallTextureTop.wrapT = THREE.RepeatWrapping
+wallTextureTop.wrapS = THREE.RepeatWrapping
+wallTextureTop.repeat.set( 1 , 20 )
+
+var wallTextureSide1 = new THREE.TextureLoader().load('assets/bricks.jpg')
+wallTextureSide1.wrapT = THREE.RepeatWrapping
+wallTextureSide1.wrapS = THREE.RepeatWrapping
+wallTextureSide1.repeat.set( 10 , 1 )
+
+var wallTextureSide2 = new THREE.TextureLoader().load('assets/bricks.jpg')
+wallTextureSide2.wrapT = THREE.RepeatWrapping
+wallTextureSide2.wrapS = THREE.RepeatWrapping
+wallTextureSide2.repeat.set( 1, 1 )
+
+var wallmaterials = 
+[
+  new THREE.MeshPhongMaterial({map: wallTextureSide1}), // right
+  new THREE.MeshPhongMaterial({map: wallTextureSide1}), // left
+  new THREE.MeshPhongMaterial({map: wallTextureTop}), // top
+  new THREE.MeshPhongMaterial({map: wallTextureTop}),  // bottom
+  new THREE.MeshPhongMaterial({map: wallTextureSide2}),   // front
+  new THREE.MeshPhongMaterial({map: wallTextureSide2})   // back
+]
+
+var wall_material = new THREE.MeshFaceMaterial(wallmaterials)
+
 const deltax = gound_size.x/2 - wall_dimentions.width/2
 const deltaz = wall_dimentions.width/2
-var wall_material = new THREE.MeshPhongMaterial({map: wallTexture})
 var wall1 = new THREE.Mesh(wall_geometry, wall_material)
 wall1.position.set(deltax, wall_dimentions.hight/2, deltaz)
 var wall2 = new THREE.Mesh(wall_geometry, wall_material)
