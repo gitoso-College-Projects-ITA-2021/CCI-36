@@ -113,10 +113,7 @@ lamp.position.set(0,1,0)
 cylinder2.add(lamp);
 
 // Lamp light 
-var lamp_light = new THREE.DirectionalLight(0xffffff, 0.6)
-lamp_light.target.x = 0
-lamp_light.target.y = 0
-lamp_light.target.z = 0
+var lamp_light = new THREE.PointLight( 0xffaaaa, 1, 100 );
 lamp.add(lamp_light)
 
 // Light
