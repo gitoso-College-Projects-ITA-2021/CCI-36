@@ -71,7 +71,7 @@ function gen_spring(R, circle_steps, height, height_steps) {
     return spring;
 }
 
-function gen_spring_tube(R, circle_steps, height, height_steps) {
+function gen_spring_tube(R, height) {
     function CustomSinCurve( scale ) {
 
         THREE.Curve.call( this );
@@ -268,7 +268,7 @@ CustomCurve.prototype.getPoint = function ( t ) {
 };
 
 
-function update_spring_tube(spring, R, circle_steps, height, height_steps) {
+function update_spring_tube(spring, R, height) {
     var path = new CustomCurve( 1, R, height );
     var geometry = new THREE.TubeBufferGeometry( path, 200, 0.01, 8, false );
     spring.children[0].geometry.copy(geometry);
@@ -278,3 +278,109 @@ function update_spring_tube(spring, R, circle_steps, height, height_steps) {
     spring.children[1].translateZ(radius/2);
 
 }
+
+function gen_spring_suport(width, heigth, depth) {
+    var spring_support = new THREE.Mesh();
+    spring_support.translateY(mesaHeight + h + 2);
+    var box_geometry = new THREE.BoxGeometry(width, depth, heigth);
+    var albedo = new THREE.TextureLoader().load("assets/Metal012_2K_Color.jpg");
+    var roughness = new THREE.TextureLoader().load("assets/Metal012_2K_Roughness.jpg");
+    var metalness = new THREE.TextureLoader().load("assets/Metal012_2K_Metalness.jpg");
+    var normal = new THREE.TextureLoader().load("assets/Metal012_2K_Normal.jpg");
+    var material = new THREE.MeshStandardMaterial({
+        map: albedo,
+        roughness: 0.0,
+        metalness: 0.5,
+        normalMap: normal,
+    });
+    var base = new THREE.Mesh( box_geometry, material );
+    var topp = new THREE.Mesh( box_geometry, material );
+    spring_support.add(base);
+    spring_support.add(topp);
+    base.translateY(-(h + 1.5));
+    // Parafuso
+    var geom_par_top = new THREE.CylinderGeometry( width*0.25, width*0.25, depth * 2.5, 5 );
+    var albedo = new THREE.TextureLoader().load("assets/Metal029_2K_Color.jpg");
+    var normal = new THREE.TextureLoader().load("assets/Metal029_2K_Normal.jpg");
+    var mat_par = new THREE.MeshPhongMaterial({
+        map: albedo,
+        normalMap: normal,
+    });
+    var parafuso1 = new THREE.Mesh(geom_par_top, mat_par);
+    var geom_par = new THREE.CylinderGeometry( width*0.05, width*0.05, (h + 2) * 0.1, 5 );
+    var parafuso2 = new THREE.Mesh(geom_par, mat_par);
+    var parafuso3 = new THREE.Mesh(geom_par, mat_par);
+    var parafuso4 = new THREE.Mesh(geom_par, mat_par);
+    var parafuso5 = new THREE.Mesh(geom_par, mat_par);
+    var parafuso2b = new THREE.Mesh(geom_par, mat_par);
+    var parafuso3b = new THREE.Mesh(geom_par, mat_par);
+    var parafuso4b = new THREE.Mesh(geom_par, mat_par);
+    var parafuso5b = new THREE.Mesh(geom_par, mat_par);
+    topp.add(parafuso1);
+    //parafuso1.translateY(width*0.05);
+
+    var geometry = new THREE.CylinderGeometry( width*0.02, width*0.02, h + 2, 32 );
+    var albedo = new THREE.TextureLoader().load("assets/Metal003_2K_Color.jpg");
+    var normal = new THREE.TextureLoader().load("assets/Metal003_2K_Normal.jpg");
+    var mat_cylinder = new THREE.MeshPhongMaterial({
+        map: albedo,
+        normalMap: normal,
+    });
+    var cylinder1 = new THREE.Mesh( geometry, mat_cylinder );
+    base.add(cylinder1);
+    cylinder1.translateY((h + 2)/2);
+    cylinder1.translateX(width/2 - width*0.05);
+    cylinder1.translateZ(heigth/2 - width*0.05);
+    topp.add(parafuso2);
+    parafuso2.translateY(width*0.05);
+    parafuso2.translateX(width/2 - width*0.05);
+    parafuso2.translateZ(heigth/2 - width*0.05);
+    base.add(parafuso2b);
+    parafuso2b.translateY(width*0.05);
+    parafuso2b.translateX(width/2 - width*0.05);
+    parafuso2b.translateZ(heigth/2 - width*0.05);
+
+    var cylinder2 = new THREE.Mesh( geometry, mat_cylinder );
+    base.add(cylinder2);
+    cylinder2.translateY((h + 2)/2);
+    cylinder2.translateX(-width/2 + width*0.05);
+    cylinder2.translateZ(heigth/2 - width*0.05);
+    topp.add(parafuso3);
+    parafuso3.translateY(width*0.05);
+    parafuso3.translateX(-width/2 + width*0.05);
+    parafuso3.translateZ(heigth/2 - width*0.05);
+    base.add(parafuso3b);
+    parafuso3b.translateY(width*0.05);
+    parafuso3b.translateX(-width/2 + width*0.05);
+    parafuso3b.translateZ(heigth/2 - width*0.05);
+
+    var cylinder3 = new THREE.Mesh( geometry, mat_cylinder );
+    base.add(cylinder3);
+    cylinder3.translateY((h + 2)/2);
+    cylinder3.translateX(-width/2 + width*0.05);
+    cylinder3.translateZ(-heigth/2 + width*0.05);
+    topp.add(parafuso4);
+    parafuso4.translateY(width*0.05);
+    parafuso4.translateX(-width/2 + width*0.05);
+    parafuso4.translateZ(-heigth/2 + width*0.05);
+    base.add(parafuso4b);
+    parafuso4b.translateY(width*0.05);
+    parafuso4b.translateX(-width/2 + width*0.05);
+    parafuso4b.translateZ(-heigth/2 + width*0.05);
+
+    var cylinder4 = new THREE.Mesh( geometry, mat_cylinder );
+    base.add(cylinder4);
+    cylinder4.translateY((h + 2)/2);
+    cylinder4.translateX(width/2 - width*0.05);
+    cylinder4.translateZ(-heigth/2 + width*0.05);
+    topp.add(parafuso5);
+    parafuso5.translateY(width*0.05);
+    parafuso5.translateX(width/2 - width*0.05);
+    parafuso5.translateZ(-heigth/2 + width*0.05);
+    base.add(parafuso5b);
+    parafuso5b.translateY(width*0.05);
+    parafuso5b.translateX(width/2 - width*0.05);
+    parafuso5b.translateZ(-heigth/2 + width*0.05);
+    return spring_support;
+}
+

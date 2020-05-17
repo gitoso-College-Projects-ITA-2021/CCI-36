@@ -29,3 +29,15 @@ function generate_vase(r1, r2, h) {
     
     return flowerVase
 }
+
+function gen_vase_tree(pos, tree_depth, mul) {
+    var tree = generate_tree(mul, tree_depth);
+
+    var vase = generate_vase(0.5, 0.4, 1);
+    vase.position.x = pos.x;
+    vase.position.y = pos.y;
+    vase.position.z = pos.z;
+    vase.add(tree);
+    tree.translateY(0.5);
+    scene.add(vase);
+}
