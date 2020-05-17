@@ -81,6 +81,44 @@ ground.add(wall2)
 ground.add(wall3) 
 ground.add(wall4) 
 
+// Street Lamp
+const base1_geometry = new THREE.BoxGeometry(2, 0.5, 2)
+var base1_texture = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('assets/wall_top.jpg')})
+var base1 = new THREE.Mesh(base1_geometry, base1_texture)
+base1.position.set(-15, 0.5/2, -5)
+ground.add(base1)
+
+const base2_geometry = new THREE.BoxGeometry(1, 5.5, 1)
+var base2_texture = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load('assets/wall_top.jpg')})
+var base2 = new THREE.Mesh(base2_geometry, base1_texture)
+base2.position.set(0, 0.5/2 + 5.5/2, 0)
+base1.add(base2)
+
+var cylinder1_geometry = new THREE.CylinderGeometry( 0.20, 0.25, 15, 32 )
+var material = new THREE.MeshBasicMaterial( {color: 0xffff00} )
+var cylinder1 = new THREE.Mesh( cylinder1_geometry, base1_texture )
+cylinder1.position.set(0,5.5/2 + 15/2,0)
+base2.add(cylinder1);
+
+var cylinder2_geometry = new THREE.CylinderGeometry( 0.7, 0.25, 0.6, 32, 10, true )
+var material = new THREE.MeshBasicMaterial( {color: 0xffff00} )
+var cylinder2 = new THREE.Mesh( cylinder2_geometry, base1_texture )
+cylinder2.position.set(0,15/2,0)
+cylinder1.add(cylinder2);
+
+var lamp_geometry = new THREE.SphereGeometry( 1, 32, 32 );
+var lamp_material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+var lamp = new THREE.Mesh( lamp_geometry, lamp_material );
+lamp.position.set(0,1,0)
+cylinder2.add(lamp);
+
+// Lamp light 
+var lamp_light = new THREE.DirectionalLight(0xffffff, 0.6)
+lamp_light.target.x = 0
+lamp_light.target.y = 0
+lamp_light.target.z = 0
+lamp.add(lamp_light)
+
 // Light
 var light = new THREE.DirectionalLight(0xffffff, 1.0, 100)
 light.position.set(20, 20, 20)
