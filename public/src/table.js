@@ -1,6 +1,3 @@
-var woodTexture = loader.load('assets/hardwood.jpg')
-var woodTextureNormal = loader.load('assets/hardwood_normal.jpg')
-
 function generateTable(mesaSize, mesaHeight) {
     var woodTexture = new THREE.TextureLoader().load('assets/hardwood.jpg')
     var woodTextureNormal = new THREE.TextureLoader().load('assets/hardwood_normal.jpg')
