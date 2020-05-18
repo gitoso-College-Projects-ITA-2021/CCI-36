@@ -1,7 +1,7 @@
 //import * as THREE from './js/three.js'
 //import * as PARSER from './lsystem_parser.js'
 //
-
+var shadows = true;
 var turtle_stack = [];
 
 var albedo = new THREE.TextureLoader().load("assets/Bark008_2K_Color.jpg");
@@ -51,10 +51,10 @@ function turtle_interpreter(turtle, scene, symbol, theta) {
             var t = turtle;
             t.translateZ(turtle.step_dis/2.0);
             pos = t.position;
-            var geometry = new THREE.CylinderBufferGeometry( turtle.begin_radius, turtle.end_radius, turtle.step_dis, 5 );
+            var geometry = new THREE.CylinderBufferGeometry( turtle.begin_radius, turtle.end_radius, turtle.step_dis, 4 );
             //var material = new THREE.MeshBasicMaterial( {color: 0x11ff11} );
             var cylinder = new THREE.Mesh( geometry, tree_mat );
-            cylinder.castShadow = true;
+            cylinder.castShadow = shadows;
             cylinder.position.copy(pos);
             cylinder.rotation.set(t.rotation.x, t.rotation.y, t.rotation.z);
             // Correct cylinder rotation

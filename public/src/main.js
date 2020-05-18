@@ -162,10 +162,10 @@ spring.rotateX(Math.PI/2);
 //spring.position.set(0, mesaHeight + h + 2, 0);
 
 // Decoration trees
-gen_vase_tree(scene, new THREE.Vector3(6, mesaHeight + 0.5, -4), 5, 8);
-gen_vase_tree(scene, new THREE.Vector3(0, mesaHeight + 0.5, -4), 5, 7);
-gen_vase_tree(scene, new THREE.Vector3(-6, mesaHeight + 0.5, -4), 4, 12);
-gen_vase_tree(scene, new THREE.Vector3(-6, mesaHeight + 0.5, 0), 5, 8);
+gen_vase_tree(scene, new THREE.Vector3(4, mesaHeight + 0.5, -4), 4, 8);
+//gen_vase_tree(scene, new THREE.Vector3(0, mesaHeight + 0.5, -4), 5, 7);
+gen_vase_tree(scene, new THREE.Vector3(-4, mesaHeight + 0.5, -4), 4, 12);
+gen_vase_tree(scene, new THREE.Vector3(-6, mesaHeight + 0.5, 0), 4, 8);
 gen_vase_tree(scene, new THREE.Vector3(6, mesaHeight + 0.5, 0), 3, 10);
 //gen_vase_tree(new THREE.Vector3(-6, mesaHeight + 0.5, 4), 3, 10);
 //gen_vase_tree(new THREE.Vector3(6, mesaHeight + 0.5, 4), 5, 8);
@@ -225,11 +225,10 @@ function animate() {
     ball_points.push(ball.localToWorld(pos));
     var trail_geom = new THREE.BufferGeometry().setFromPoints(ball_points);
     trail.geometry.copy(trail_geom);
-    if (ball_points.length > 100)
-        ball_points.length = 0;
 
     // Reset simulation to avoid numeric issues
-    if (reset > 300 || dt > 0.1) {
+    if (reset > 2000 || dt > 0.1) {
+        ball_points.length = 0;
         reset = 0;
         y = [x0, 0, theta0, 0];
         dydt = [0, 0, 0, 0];
@@ -239,12 +238,12 @@ function animate() {
     }
 
     dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
-    //dt = (Date.now() - last_time)/1000;
+    dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
 
     count += 1;
     reset += 1;
-    //console.log(dt);
+    console.log(dt);
 }
 
 animate()

@@ -105,6 +105,7 @@ function gen_spring_tube(R, height) {
     geometry.elementsNeedUpdate = true;
     geometry.normalsNeedUpdate = true;
     var mesh = new THREE.Mesh( geometry, material );
+    mesh.castShadow = true;
     var spring = new THREE.Mesh();
     spring.add(mesh);
 
@@ -132,6 +133,7 @@ function gen_spring_tube(R, height) {
 
     var geometry = new THREE.SphereGeometry( R, 32, 32 );
     var sphere = new THREE.Mesh( geometry, material );
+    sphere.castShadow = true;
     cylinder.add(sphere);
     sphere.translateZ(radius/2);
     return spring;
@@ -296,6 +298,7 @@ function gen_spring_suport(width, heigth, depth) {
     var base = new THREE.Mesh( box_geometry, material );
     var topp = new THREE.Mesh( box_geometry, material );
     base.castShadow = true;
+    base.receiveShadow = true;
     topp.castShadow = true;
     spring_support.add(base);
     spring_support.add(topp);
