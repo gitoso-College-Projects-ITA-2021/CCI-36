@@ -30,7 +30,7 @@ var floorTexture = loader.load('assets/floor.jpg')
 floorTexture.wrapT = THREE.RepeatWrapping
 floorTexture.wrapS = THREE.RepeatWrapping
 floorTexture.repeat.set( 100 , 100 )
-var material_ground = new THREE.MeshLambertMaterial({map: floorTexture})
+var material_ground = new THREE.MeshStandardMaterial({map: floorTexture})
 var ground = new THREE.Mesh(geometry, material_ground)
 ground.receiveShadow = true;
 scene.add(ground)
