@@ -13,6 +13,7 @@ function generate_vase(r1, r2, h) {
     var geometry = new THREE.CylinderGeometry( r1, r2, h, 20 );
     var material = new THREE.MeshPhongMaterial( {map: texture, normalMap: normalTexture} );
     var vase = new THREE.Mesh( geometry, material );
+    vase.castShadow = true;
 
 
     // Internal earth
@@ -30,7 +31,7 @@ function generate_vase(r1, r2, h) {
     return flowerVase
 }
 
-function gen_vase_tree(pos, tree_depth, mul) {
+function gen_vase_tree(scene, pos, tree_depth, mul) {
     var tree = generate_tree(mul, tree_depth);
 
     var vase = generate_vase(0.5, 0.4, 1);

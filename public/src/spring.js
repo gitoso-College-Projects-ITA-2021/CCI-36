@@ -295,6 +295,8 @@ function gen_spring_suport(width, heigth, depth) {
     });
     var base = new THREE.Mesh( box_geometry, material );
     var topp = new THREE.Mesh( box_geometry, material );
+    base.castShadow = true;
+    topp.castShadow = true;
     spring_support.add(base);
     spring_support.add(topp);
     base.translateY(-(h + 1.5));
@@ -327,6 +329,7 @@ function gen_spring_suport(width, heigth, depth) {
         normalMap: normal,
     });
     var cylinder1 = new THREE.Mesh( geometry, mat_cylinder );
+    cylinder1.castShadow = true;
     base.add(cylinder1);
     cylinder1.translateY((h + 2)/2);
     cylinder1.translateX(width/2 - width*0.05);
@@ -341,6 +344,7 @@ function gen_spring_suport(width, heigth, depth) {
     parafuso2b.translateZ(heigth/2 - width*0.05);
 
     var cylinder2 = new THREE.Mesh( geometry, mat_cylinder );
+    cylinder2.castShadow = true;
     base.add(cylinder2);
     cylinder2.translateY((h + 2)/2);
     cylinder2.translateX(-width/2 + width*0.05);
@@ -355,6 +359,7 @@ function gen_spring_suport(width, heigth, depth) {
     parafuso3b.translateZ(heigth/2 - width*0.05);
 
     var cylinder3 = new THREE.Mesh( geometry, mat_cylinder );
+    cylinder3.castShadow = true;
     base.add(cylinder3);
     cylinder3.translateY((h + 2)/2);
     cylinder3.translateX(-width/2 + width*0.05);
@@ -369,6 +374,7 @@ function gen_spring_suport(width, heigth, depth) {
     parafuso4b.translateZ(-heigth/2 + width*0.05);
 
     var cylinder4 = new THREE.Mesh( geometry, mat_cylinder );
+    cylinder4.castShadow = true;
     base.add(cylinder4);
     cylinder4.translateY((h + 2)/2);
     cylinder4.translateX(width/2 - width*0.05);

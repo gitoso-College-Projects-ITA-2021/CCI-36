@@ -32,6 +32,7 @@ floorTexture.wrapS = THREE.RepeatWrapping
 floorTexture.repeat.set( 100 , 100 )
 var material_ground = new THREE.MeshLambertMaterial({map: floorTexture})
 var ground = new THREE.Mesh(geometry, material_ground)
+ground.receiveShadow = true;
 scene.add(ground)
 
 // Wall
@@ -111,22 +112,22 @@ cylinder1.add(cylinder2);
 var lamp_geometry = new THREE.SphereGeometry( 1, 32, 32 )
 var lamp_material = new THREE.MeshStandardMaterial(  {emissive: 0xffff00, color: 0xffffff} )
 var lamp = new THREE.Mesh( lamp_geometry, lamp_material )
-lamp.castShadow = true
+//lamp.castShadow = true
 lamp.position.set(0,1,0)
 cylinder2.add(lamp);
 
 // Lamp light 
-var lamp_light = new THREE.PointLight( 0xffffff, 1, 100 )
+var lamp_light = new THREE.PointLight( 0xffffff, 1.5, 300 )
 lamp_light.castShadow = true 
 lamp_light.receiveShadow = false
-lamp_light.position.set( lamp.position )
-scene.add(lamp_light)
+//lamp_light.position.set( lamp.position )
+lamp.add(lamp_light)
 
 //Set up shadow properties for the light
-lamp_light.shadow.mapSize.width = 512;  
-lamp_light.shadow.mapSize.height = 512; 
+lamp_light.shadow.mapSize.width = 512 * 4;  
+lamp_light.shadow.mapSize.height = 512 * 4; 
 lamp_light.shadow.camera.near = 0.5;      
-lamp_light.shadow.camera.far = 500      
+lamp_light.shadow.camera.far = 100      
 
 // Light
 var light = new THREE.DirectionalLight(0xffffff, 1.0, 100)
@@ -134,7 +135,7 @@ light.position.set(20, 20, 20)
 light.target.x = 0
 light.target.y = 0
 light.target.z = 0
-scene.add(light)
+//scene.add(light)
 
 
 // Mesa (tampo)
@@ -161,11 +162,11 @@ spring.rotateX(Math.PI/2);
 //spring.position.set(0, mesaHeight + h + 2, 0);
 
 // Decoration trees
-gen_vase_tree(new THREE.Vector3(6, mesaHeight + 0.5, -4), 5, 8);
-gen_vase_tree(new THREE.Vector3(0, mesaHeight + 0.5, -4), 5, 7);
-gen_vase_tree(new THREE.Vector3(-6, mesaHeight + 0.5, -4), 4, 12);
-gen_vase_tree(new THREE.Vector3(-6, mesaHeight + 0.5, 0), 5, 8);
-gen_vase_tree(new THREE.Vector3(6, mesaHeight + 0.5, 0), 3, 10);
+gen_vase_tree(scene, new THREE.Vector3(6, mesaHeight + 0.5, -4), 5, 8);
+gen_vase_tree(scene, new THREE.Vector3(0, mesaHeight + 0.5, -4), 5, 7);
+gen_vase_tree(scene, new THREE.Vector3(-6, mesaHeight + 0.5, -4), 4, 12);
+gen_vase_tree(scene, new THREE.Vector3(-6, mesaHeight + 0.5, 0), 5, 8);
+gen_vase_tree(scene, new THREE.Vector3(6, mesaHeight + 0.5, 0), 3, 10);
 //gen_vase_tree(new THREE.Vector3(-6, mesaHeight + 0.5, 4), 3, 10);
 //gen_vase_tree(new THREE.Vector3(6, mesaHeight + 0.5, 4), 5, 8);
 

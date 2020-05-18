@@ -54,6 +54,7 @@ function turtle_interpreter(turtle, scene, symbol, theta) {
             var geometry = new THREE.CylinderBufferGeometry( turtle.begin_radius, turtle.end_radius, turtle.step_dis, 5 );
             //var material = new THREE.MeshBasicMaterial( {color: 0x11ff11} );
             var cylinder = new THREE.Mesh( geometry, tree_mat );
+            cylinder.castShadow = true;
             cylinder.position.copy(pos);
             cylinder.rotation.set(t.rotation.x, t.rotation.y, t.rotation.z);
             // Correct cylinder rotation
