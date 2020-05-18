@@ -26,6 +26,7 @@ function generateTable(mesaSize, mesaHeight) {
     mesa.add(pe2)
     mesa.add(pe3)
     mesa.add(pe4)
+    mesa.receiveShadow = true
 
     return mesa
 }

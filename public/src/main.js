@@ -7,6 +7,8 @@ var renderer = new THREE.WebGLRenderer({
   antialias:true
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
+renderer.shadowMap.enabled = true
 var loader = new THREE.TextureLoader()
 
 // Enviroment
@@ -106,15 +108,25 @@ var cylinder2 = new THREE.Mesh( cylinder2_geometry, base1_texture )
 cylinder2.position.set(0,15/2,0)
 cylinder1.add(cylinder2);
 
-var lamp_geometry = new THREE.SphereGeometry( 1, 32, 32 );
-var lamp_material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-var lamp = new THREE.Mesh( lamp_geometry, lamp_material );
+var lamp_geometry = new THREE.SphereGeometry( 1, 32, 32 )
+var lamp_material = new THREE.MeshStandardMaterial(  {emissive: 0xffff00, color: 0xffffff} )
+var lamp = new THREE.Mesh( lamp_geometry, lamp_material )
+lamp.castShadow = true
 lamp.position.set(0,1,0)
 cylinder2.add(lamp);
 
 // Lamp light 
-var lamp_light = new THREE.PointLight( 0xffaaaa, 1, 100 );
-lamp.add(lamp_light)
+var lamp_light = new THREE.PointLight( 0xffffff, 1, 100 )
+lamp_light.castShadow = true 
+lamp_light.receiveShadow = false
+lamp_light.position.set( lamp.position )
+scene.add(lamp_light)
+
+//Set up shadow properties for the light
+lamp_light.shadow.mapSize.width = 512;  
+lamp_light.shadow.mapSize.height = 512; 
+lamp_light.shadow.camera.near = 0.5;      
+lamp_light.shadow.camera.far = 500      
 
 // Light
 var light = new THREE.DirectionalLight(0xffffff, 1.0, 100)
