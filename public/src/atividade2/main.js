@@ -1,31 +1,55 @@
 // Three.js setup
-var scene = new THREE.Scene()
-var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000)
 var renderer = new THREE.WebGLRenderer({
   canvas:document.getElementById("main-canvas"),
-  alpha:false,
   antialias:true
 })
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setPixelRatio( window.devicePixelRatio );
+
 var gl = renderer.domElement.getContext('webgl') ||
                 renderer.domElement.getContext('experimental-webgl');
 gl.getExtension('OES_standard_derivatives');
-renderer.setSize(window.innerWidth, window.innerHeight)
+
+var scene = new THREE.Scene()
+
+var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100000);
+
 var loader = new THREE.TextureLoader()
 
-// Enviroment
-var loader_cube = new THREE.CubeTextureLoader();
+sun_light = new THREE.DirectionalLight( 0xffffff, 0.8 );
+scene.add( sun_light );
 
-var textureCube = loader_cube.load( [
-        'assets/skybox_space/nx.png', 'assets/skybox_space/px.png',
-        'assets/skybox_space/py.png', 'assets/skybox_space/ny.png',
-        'assets/skybox_space/pz.png', 'assets/skybox_space/nz.png',
-] );
+//scene.fog = new THREE.Fog( 0xcce0ff, 500, 1000 );
 
-scene.background = textureCube;
-scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
+var sky = generate_sky();
+var sky_uniforms = sky.material.uniforms;
+sky_uniforms[ 'turbidity' ].value = 10;
+sky_uniforms[ 'rayleigh' ].value = 2;
+sky_uniforms[ 'luminance' ].value = 1;
+sky_uniforms[ 'mie_coeff' ].value = 0.005;
+sky_uniforms[ 'mie_directionalg' ].value = 0.8;
+
+var cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 
+    128, 
+    { 
+        format: THREE.RGBFormat, 
+        generateMipmaps: true,
+        minFilter: THREE.LinearMipmapLinearFilter 
+    }
+);
+var cubeCamera = new THREE.CubeCamera( 0.1, 100000, cubeRenderTarget );
+scene.add(sky);
+scene.add(cubeCamera);
+
+
+// Isso aqui nao tah funcionando e nao entendo pq
+scene.background = cubeRenderTarget;
+
 
 var terrain = generate_terrain();
+//sky.scale.setScalar( 450000 );
 scene.add(terrain);
+//scene.add( sky );
 
 var rock_texture = loader.load('assets/terrain_textures/rock_ground_diff_1k.jpg');
 rock_texture.wrapS = THREE.RepeatWrapping;
@@ -60,8 +84,22 @@ camera.lookAt(0.0, 0.0, 0.0);
 var controls = new THREE.OrbitControls(camera, renderer.domElement)
 
 var terrain_uniforms = terrain.material.uniforms;
+var parameters = {
+    distance: 400,
+    inclination: 0.49,
+    azimuth: 0.205
+};
+function updateSun() {
+    update_sun(sky, sun_light, parameters.inclination, parameters.azimuth, parameters.distance);
+    cubeCamera.update(renderer, sky);
+}
+updateSun();
 
 var gui = new dat.GUI();
+var folder = gui.addFolder( 'Sky' );
+folder.add( parameters, 'inclination', 0, 0.5, 0.0001 ).onChange( updateSun );
+folder.add( parameters, 'azimuth', 0, 1, 0.0001 ).onChange( updateSun );
+folder.open();
 
 var folder = gui.addFolder('Terrain');
 folder.add(terrain_uniforms.H, 'value', 0, 1, 0.001).name('H');
@@ -72,6 +110,7 @@ folder.add(terrain_uniforms.gain, 'value', 0, 4, 0.001).name('gain');
 folder.add(terrain_uniforms.scale, 'value', 1, 1000, 1).name('scale');
 folder.add(terrain_uniforms.xoffset, 'value', 0, 10000, 0.001).name('xoffset');
 folder.add(terrain_uniforms.yoffset, 'value', 0, 10000, 0.001).name('yoffset');
+folder.open();
 
 var last_time = 0.0;
 var dt = 0;
@@ -91,4 +130,14 @@ function animate() {
     //console.log(dt);
 }
 
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+window.addEventListener( 'resize', onWindowResize, false );
 animate()

@@ -113,6 +113,10 @@ function fragment_shader() {
         uniform sampler2D forest_texture;
         uniform sampler2D sand_texture;
 
+        uniform vec3 fogColor;
+        uniform float fogNear;
+        uniform float fogFar;
+
         varying vec3 frag_pos;
         varying vec3 world_pos;
         varying vec3 norm;
@@ -165,6 +169,9 @@ function fragment_shader() {
 
             //col = rock_tex.xyz;
             gl_FragColor = (ambient + diffuse) * vec4(col , 1.0);
+            float depth = gl_FragCoord.z / gl_FragCoord.w;
+            float fogFactor = smoothstep( fogNear, fogFar, depth );
+            gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
             //gl_FragColor = vec4(nor, 1.0);
         }
     `
@@ -185,12 +192,16 @@ function generate_terrain() {
         grassrock_texture: {type: 'sampler2D', value: null},
         forest_texture: {type: 'sampler2D', value: null},
         sand_texture: {type: 'sampler2D', value: null},
+        fogColor:    { type: "c", value: new THREE.Vector3(0.45, 0.5, 0.67) },
+        fogNear:     { type: "f", value: 500 },
+        fogFar:      { type: "f", value: 10000 }
     };
     var material = new THREE.ShaderMaterial({
         uniforms: uniforms,
         fragmentShader: fragment_shader(),
         vertexShader: vertex_shader(),
     });
+
     var terrain = new THREE.Mesh( terrain_geom, material );
 
     return terrain;

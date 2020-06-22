@@ -21,7 +21,7 @@ var textureCube = loader_cube.load( [
 ] );
 
 scene.background = textureCube;
-scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
+scene.fog = new THREE.Fog( 0xcce0ff, 500, 1000 );
 
 // Ground
 const gound_size = {x: 100, y: 0.1, z: 100}
