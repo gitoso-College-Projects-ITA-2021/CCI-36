@@ -34,12 +34,10 @@ var cubeRenderTarget = new THREE.WebGLCubeRenderTarget(
     { 
         format: THREE.RGBFormat, 
         generateMipmaps: true,
-        minFilter: THREE.LinearMipmapLinearFilter 
+        minFilter: THREE.LinearMipmapLinearFilter ,
     }
 );
-var cubeCamera = new THREE.CubeCamera( 0.1, 100000, cubeRenderTarget );
-scene.add(sky);
-scene.add(cubeCamera);
+var cubeCamera = new THREE.CubeCamera( 0.1, 1, cubeRenderTarget );
 
 
 // Isso aqui nao tah funcionando e nao entendo pq
