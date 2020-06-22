@@ -4,9 +4,15 @@ body {
     overflow: hidden; /* no scroll bar */
   }
   
-  canvas {
-    width: 100%;
-    heigth: 100%;
-  }
+canvas {
+  width: 100%;
+  heigth: 100%;
+}
+
+.main-page {
+  background: white;
+}
+
+
   
   
