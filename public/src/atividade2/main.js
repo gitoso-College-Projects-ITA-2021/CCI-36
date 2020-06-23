@@ -12,7 +12,7 @@ gl.getExtension('OES_standard_derivatives');
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 10000);
+var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 15000);
 
 var loader = new THREE.TextureLoader()
 

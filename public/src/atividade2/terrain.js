@@ -151,9 +151,9 @@ function fragment_shader() {
             float w = height/(gain * scale);
             vec2 layers[4];
             //layers[0] = vec2(-10.0, 200.0);
-            layers[0] = vec2(-10.0, 300.0);
-            layers[1] = vec2(200.0, 500.0);
-            layers[2] = vec2(400.0, 800.0);
+            layers[0] = vec2(-10.0, 100.0);
+            layers[1] = vec2(50.0, 500.0);
+            layers[2] = vec2(100.0, 800.0);
             layers[3] = vec2(700.0, 2000.0);
 
 
