@@ -43,7 +43,6 @@ var cubeCamera = new THREE.CubeCamera( 0.1, 1, cubeRenderTarget );
 // Isso aqui nao tah funcionando e nao entendo pq
 scene.background = cubeRenderTarget;
 
-
 var terrain = generate_terrain();
 //sky.scale.setScalar( 450000 );
 scene.add(terrain);
@@ -93,6 +92,7 @@ var parameters = {
     inclination: 0.49,
     azimuth: 0.205
 };
+
 function updateSun() {
     update_sun(sky, sun_light, parameters.inclination, parameters.azimuth, parameters.distance);
     terrain.material.uniforms['sun_position'].value.copy(sun_light.position).normalize();
@@ -154,17 +154,42 @@ boatMtlLoader.load('boat2.mtl', function(materials){
 });
 
 
+var waterGeometry = new THREE.PlaneBufferGeometry( 50000, 50000 );
+
+water = new THREE.Water(
+  waterGeometry,
+  {
+    textureWidth: 512,
+    textureHeight: 512,
+    waterNormals: new THREE.TextureLoader().load( 'assets/waternormals.jpg', function ( texture ) {
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+    } ),
+    alpha: 1.0,
+    sunDirection: sun_light.position.clone().normalize(),
+    sunColor: 0xffffff,
+    waterColor: 0x001e0f,
+    distortionScale: 3.7,
+    fog: scene.fog !== undefined
+  }
+);
+
+water.rotation.x = - Math.PI / 2;
+water.position.set(0, 210, 0)
+scene.add( water );
+
+
 var last_time = 0.0;
 var dt = 0;
 var count = 0;
 function animate() {  
     requestAnimationFrame(animate)
+    render()
 
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
     controls.update( dt );
-    renderer.render(scene, camera)
-
 
     dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
     dt = (Date.now() - last_time)/1000;
@@ -178,8 +203,16 @@ function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+function render() {
+
+  var time = performance.now() * 0.001;
+  water.material.uniforms[ 'time' ].value += 1.1 / 60.0;
+  updateSun();
+  renderer.render( scene, camera );
 
 }
 
