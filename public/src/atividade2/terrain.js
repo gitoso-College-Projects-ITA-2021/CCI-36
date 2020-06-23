@@ -78,17 +78,17 @@ function vertex_shader() {
             v_uv = 16.0 * uv;
             vec3 offset = vec3(-1.0, 0.0, 1.0);
             vec3 newpos = position + vec3(xoffset, 0.0, yoffset);
-            float y = rigged_multifractal(newpos.xz/7500.0); 
+            float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
             vec4 p = vec4(position.x, y, position.z, 1.0);
             vec4 poff = vec4(newpos.x, y, newpos.z, 1.0);
             vec3 pos = newpos + offset.zyy;
-            y = rigged_multifractal(pos.xz/7500.0); 
+            y = rigged_multifractal(pos.xz/10000.0); 
             y *= scale;
             vec4 p1 = vec4(pos.x, y, pos.z, 1.0);
             pos = newpos + offset.yyx;
-            y = rigged_multifractal(pos.xz/7500.0); 
+            y = rigged_multifractal(pos.xz/10000.0); 
             y *= scale;
             vec4 p2 = vec4(pos.x, y, pos.z, 1.0);
             norm = normalize(cross((p1 - poff).xyz, (p2 - poff).xyz));
@@ -107,6 +107,7 @@ function fragment_shader() {
         uniform float offset;
         uniform float gain;
         uniform float scale;
+        uniform vec3 sun_position;
 
         uniform sampler2D rock_texture;
         uniform sampler2D grassrock_texture;
@@ -127,11 +128,11 @@ function fragment_shader() {
         void main() {
             vec4 rock_tex = texture2D(rock_texture, v_uv);
             vec4 grassrock_tex = texture2D(grassrock_texture, v_uv);
-            vec4 forest_tex = texture2D(forest_texture, v_uv);
+            vec4 forest_tex = texture2D(forest_texture, 32.0 * v_uv);
             vec4 sand_tex = texture2D(sand_texture, v_uv);
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
-            vec4 ambient = vec4(0.1, 0.1, 0.1, 1.0);
+            vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
 
 
             vec4 water_color = vec4(0.0, 0.0, 1.0, 1.0);
@@ -161,7 +162,7 @@ function fragment_shader() {
             }
 
             vec3 nor = norm;
-            vec3 light_dir = normalize(vec3(0.0, 1.0, 0.0));
+            vec3 light_dir = normalize(sun_position);
             float diff = max(dot(norm, light_dir), 0.0);
             vec4 diffuse = diff * light_color;
             const vec4 fog_color = vec4(0.47, 0.5, 0.67, 0.0);
@@ -171,13 +172,14 @@ function fragment_shader() {
             gl_FragColor = (ambient + diffuse) * vec4(col , 1.0);
             float depth = gl_FragCoord.z / gl_FragCoord.w;
             float fogFactor = smoothstep( fogNear, fogFar, depth );
-            gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+            //gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
             //gl_FragColor = vec4(nor, 1.0);
         }
     `
 }
+
 function generate_terrain() {
-    var terrain_geom = new THREE.PlaneBufferGeometry(7500, 7500, 5*255, 5*255);
+    var terrain_geom = new THREE.PlaneBufferGeometry(20000, 20000, 6*255, 6*255);
     terrain_geom.rotateX( - Math.PI / 2 );
     var uniforms = {
         H : {type: 'float', value: 0.75}, 
@@ -194,7 +196,8 @@ function generate_terrain() {
         sand_texture: {type: 'sampler2D', value: null},
         fogColor:    { type: "c", value: new THREE.Vector3(0.45, 0.5, 0.67) },
         fogNear:     { type: "f", value: 500 },
-        fogFar:      { type: "f", value: 10000 }
+        fogFar:      { type: "f", value: 10000 },
+        sun_position : {type: 'vec3', value: new THREE.Vector3(0, 1, 0)},
     };
     var material = new THREE.ShaderMaterial({
         uniforms: uniforms,

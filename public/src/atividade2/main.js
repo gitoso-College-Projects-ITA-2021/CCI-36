@@ -77,10 +77,14 @@ terrain.material.uniforms.forest_texture.value = forest_texture;
 
 terrain.material.uniforms.sand_texture.value = sand_texture;
 
-camera.position.set(0.0,  2000.0, 4000.0);
+camera.position.set(3000.0,  400.0, 700.0);
 camera.lookAt(0.0, 0.0, 0.0);
-var controls = new THREE.OrbitControls(camera, renderer.domElement)
-
+var controls = new THREE.FlyControls(camera, renderer.domElement)
+controls.domElement = renderer.domElement;
+controls.rollSpeed = Math.PI / 24;
+controls.autoForward = false;
+controls.dragToLook = true;
+//controls.mouseDragOn = true;
 var terrain_uniforms = terrain.material.uniforms;
 var parameters = {
     distance: 400,
@@ -89,6 +93,7 @@ var parameters = {
 };
 function updateSun() {
     update_sun(sky, sun_light, parameters.inclination, parameters.azimuth, parameters.distance);
+    terrain.material.uniforms['sun_position'].value.copy(sun_light.position).normalize();
     cubeCamera.update(renderer, sky);
 }
 updateSun();
@@ -116,7 +121,9 @@ var count = 0;
 function animate() {  
     requestAnimationFrame(animate)
 
-    controls.update()
+    controls.movementSpeed = 500;
+    controls.lookSpeed = 0.1;
+    controls.update( dt );
     renderer.render(scene, camera)
 
 
