@@ -163,7 +163,7 @@ boatMtlLoader.load('boat.mtl', function(materials){
   boatloader.setPath('assets/boat/');
   boatloader.load('boat.obj',function ( object ) {
     object.position.y = 200;
-    object.position.x = 2000;
+    object.position.x = 3000;
     object.position.z = 1000;
     scene.add( object );
   });
@@ -180,8 +180,8 @@ boatMtlLoader.load('boat2.mtl', function(materials){
   boatloader.setPath('assets/boat2/');
   boatloader.load('boat2.obj',function ( object ) {
     object.rotateX(THREE.Math.degToRad(-90));
-    object.position.y = 200;
-    object.position.x = 50;
+    object.position.y = 180;
+    object.position.x = 1800;
     object.position.z = -2500;
     scene.add( object );
   });
