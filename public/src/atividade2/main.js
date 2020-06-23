@@ -81,7 +81,7 @@ var grass = generate_grass();
 scene.add(grass);
 scene.add(terrain);
 
-var grass_texture = loader.load('assets/billboardgrass0002.png');
+var grass_texture = loader.load('assets/arvore.png');
 grass_texture.wrapS = THREE.RepeatWrapping;
 grass_texture.wrapT = THREE.RepeatWrapping;
 grass_texture.repeat.set( 4, 4 );

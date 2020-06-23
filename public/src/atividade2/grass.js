@@ -113,17 +113,17 @@ function grass_vertex_shader() {
 
         void main() {
             vec3 newpos = translate + vec3(xoffset, 0.0, yoffset);
-            newpos.x += 20.0 * noise(newpos.xz);
-            newpos.z += 10.0 * noise(newpos.zx);
+            newpos.x += 200.0 * noise(newpos.xz);
+            newpos.z += 100.0 * noise(newpos.zx);
             float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
-            newpos.y = height + 5.0;
+            newpos.y = height + 25.0;
 
 
             //vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
             float sc =  10.0 * noise(newpos.xz);
-            sc = 3.0;
+            sc = 10.0;
             sc = sc * 5.0 + 5.0;
             //mvPosition.xyz += position * sc;
             v_scale = 1.0;
@@ -194,7 +194,7 @@ function grass_fragment_shader() {
 
 
             vec4 grass_tex = texture2D(grass_texture, v_uv);
-            if (grass_tex.w < 0.5 || height < 300.0 || height > 700.0) discard;
+            if (grass_tex.w < 0.5 || height < 250.0 || height > 700.0) discard;
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
             vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
@@ -247,20 +247,20 @@ function generate_grass() {
         uniforms: uniforms,
         fragmentShader: grass_fragment_shader(),
         vertexShader: grass_vertex_shader(),
-        depthTest: true,
+        //depthTest: true,
         //side: THREE.DoubleSide,
-        depthWrite: true
+        //depthWrite: true
 
     });
 
-    var circleGeometry = new THREE.PlaneBufferGeometry( 1, 1, 2, 2);
+    var circleGeometry = new THREE.PlaneBufferGeometry( 1, 1, 1, 1);
     circleGeometry.rotateY( - Math.PI / 2 );
 
     var geometry = new THREE.InstancedBufferGeometry();
     geometry.index = circleGeometry.index;
     geometry.attributes = circleGeometry.attributes;
 
-    var dim = 1024;
+    var dim = 300;
     var particleCount = dim * dim;
 
     var translateArray = new Float32Array( particleCount * 3 );
