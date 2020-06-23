@@ -115,6 +115,41 @@ folder.add(terrain_uniforms.xoffset, 'value', 0, 10000, 0.001).name('xoffset');
 folder.add(terrain_uniforms.yoffset, 'value', 0, 10000, 0.001).name('yoffset');
 folder.open();
 
+// instantiate boat
+var boatMtlLoader = new THREE.MTLLoader();
+boatMtlLoader.setPath('assets/boat/');
+boatMtlLoader.load('boat.mtl', function(materials){
+  materials.preload();
+
+  var boatloader = new THREE.OBJLoader();
+  boatloader.setMaterials(materials);
+  boatloader.setPath('assets/boat/');
+  boatloader.load('boat.obj',function ( object ) {
+    object.position.y = 200;
+    object.position.x = 2000;
+    object.position.z = 1000;
+    scene.add( object );
+  });
+});
+
+// instantiate boat
+var boatMtlLoader = new THREE.MTLLoader();
+boatMtlLoader.setPath('assets/boat2/');
+boatMtlLoader.load('boat2.mtl', function(materials){
+  materials.preload();
+
+  var boatloader = new THREE.OBJLoader();
+  boatloader.setMaterials(materials);
+  boatloader.setPath('assets/boat2/');
+  boatloader.load('boat2.obj',function ( object ) {
+    object.rotateX(THREE.Math.degToRad(-90));
+    object.position.y = 200;
+    object.position.x = 50;
+    object.position.z = -2500;
+    scene.add( object );
+  });
+});
+
 var last_time = 0.0;
 var dt = 0;
 var count = 0;
