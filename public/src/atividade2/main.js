@@ -12,7 +12,7 @@ gl.getExtension('OES_standard_derivatives');
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 100000);
+var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 10000);
 
 var loader = new THREE.TextureLoader()
 
@@ -81,7 +81,7 @@ var grass = generate_grass();
 scene.add(grass);
 scene.add(terrain);
 
-var grass_texture = loader.load('assets/arvore.png');
+var grass_texture = loader.load('assets/arvore2.png');
 grass_texture.wrapS = THREE.RepeatWrapping;
 grass_texture.wrapT = THREE.RepeatWrapping;
 grass_texture.repeat.set( 4, 4 );
