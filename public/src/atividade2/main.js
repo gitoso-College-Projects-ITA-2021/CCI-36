@@ -115,6 +115,8 @@ var gui = new dat.GUI();
 var folder = gui.addFolder( 'Sky' );
 folder.add( parameters, 'inclination', 0, 0.5, 0.0001 ).onChange( updateSun );
 folder.add( parameters, 'azimuth', 0, 1, 0.0001 ).onChange( updateSun );
+folder.add( terrain_uniforms.fogNear, 'value', 0, 50000, 0.01 ).name('Fog Near');
+folder.add( terrain_uniforms.fogFar, 'value', 0, 50000, 0.01 ).name('Fog Far');
 folder.open();
 
 var folder = gui.addFolder('Terrain');
@@ -137,6 +139,8 @@ grass_uniforms.gain = terrain_uniforms.gain;
 grass_uniforms.scale = terrain_uniforms.scale;
 grass_uniforms.xoffset = terrain_uniforms.xoffset;
 grass_uniforms.yoffset = terrain_uniforms.yoffset;
+grass_uniforms.fogNear = terrain_uniforms.fogNear;
+grass_uniforms.fogFar = terrain_uniforms.fogFar;
 
 var folder = gui.addFolder('Grass');
 folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
