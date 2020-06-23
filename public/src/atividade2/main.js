@@ -226,7 +226,7 @@ function animate() {
     dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
     total = dt/2.0;
-    grass_uniforms.time.value = total;
+    //grass_uniforms.time.value = total;
 
 
     count += 1;

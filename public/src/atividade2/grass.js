@@ -112,13 +112,15 @@ function grass_vertex_shader() {
         }
 
         void main() {
-            vec3 newpos = translate + vec3(xoffset, 0.0, yoffset);
+            vec3 newpos = translate;
             newpos.x += 200.0 * noise(newpos.xz);
             newpos.z += 100.0 * noise(newpos.zx);
+            newpos +=  vec3(xoffset, 0.0, yoffset);
             float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
             newpos.y = height + 25.0;
+            newpos -=  vec3(xoffset, 0.0, yoffset);
 
 
             //vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
