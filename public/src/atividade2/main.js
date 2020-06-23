@@ -82,9 +82,9 @@ scene.add(grass);
 scene.add(terrain);
 
 var grass_texture = loader.load('assets/billboardgrass0002.png');
-sand_texture.wrapS = THREE.RepeatWrapping;
-sand_texture.wrapT = THREE.RepeatWrapping;
-sand_texture.repeat.set( 4, 4 );
+grass_texture.wrapS = THREE.RepeatWrapping;
+grass_texture.wrapT = THREE.RepeatWrapping;
+grass_texture.repeat.set( 4, 4 );
 
 grass.material.uniforms.grass_texture.value = grass_texture;
 grass.material.uniforms.env_map.value = scene.background;
@@ -245,7 +245,7 @@ function render() {
 
   var time = performance.now() * 0.001;
   water.material.uniforms[ 'time' ].value += 1.1 / 60.0;
-  updateSun();
+  //updateSun();
   renderer.render( scene, camera );
 
 }

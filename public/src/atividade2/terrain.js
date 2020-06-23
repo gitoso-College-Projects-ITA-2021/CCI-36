@@ -140,24 +140,24 @@ function fragment_shader() {
 
 
             vec4 water_color = vec4(0.0, 0.0, 1.0, 1.0);
-            vec4 colors[5];
-            colors[0] = water_color;
-            colors[1] = sand_tex;
-            colors[2] = forest_tex;
-            colors[3] = grassrock_tex;
-            colors[4] = rock_tex;
+            vec4 colors[4];
+            //colors[0] = water_color;
+            colors[0] = sand_tex;
+            colors[1] = forest_tex;
+            colors[2] = grassrock_tex;
+            colors[3] = rock_tex;
 
             vec3 col = vec3(0);
             float w = height/(gain * scale);
-            vec2 layers[5];
-            layers[0] = vec2(-10.0, 200.0);
-            layers[1] = vec2(150.0, 300.0);
-            layers[2] = vec2(200.0, 500.0);
-            layers[3] = vec2(400.0, 800.0);
-            layers[4] = vec2(700.0, 2000.0);
+            vec2 layers[4];
+            //layers[0] = vec2(-10.0, 200.0);
+            layers[0] = vec2(-10.0, 300.0);
+            layers[1] = vec2(200.0, 500.0);
+            layers[2] = vec2(400.0, 800.0);
+            layers[3] = vec2(700.0, 2000.0);
 
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 float range = layers[i].y - layers[i].x;
                 float weight = (range - abs(height - layers[i].y)) / range;
