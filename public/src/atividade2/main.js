@@ -1,6 +1,7 @@
 // Three.js setup
 var renderer = new THREE.WebGLRenderer({
   canvas:document.getElementById("main-canvas"),
+    alpha:true,
   antialias:true
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -78,6 +79,17 @@ terrain.material.uniforms.forest_texture.value = forest_texture;
 terrain.material.uniforms.sand_texture.value = sand_texture;
 
 terrain.material.uniforms.env_map.value = scene.background;
+
+var grass = generate_grass();
+scene.add(grass);
+
+var grass_texture = loader.load('assets/billboardgrass0002.png');
+sand_texture.wrapS = THREE.RepeatWrapping;
+sand_texture.wrapT = THREE.RepeatWrapping;
+sand_texture.repeat.set( 4, 4 );
+
+grass.material.uniforms.grass_texture.value = grass_texture;
+grass.material.uniforms.env_map.value = scene.background;
 
 camera.position.set(3000.0,  400.0, 700.0);
 camera.lookAt(0.0, 0.0, 0.0);

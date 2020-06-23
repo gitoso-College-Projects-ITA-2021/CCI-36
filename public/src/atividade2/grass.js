@@ -1,5 +1,15 @@
-function vertex_shader() {
+function grass_vertex_shader() {
     return `
+		precision highp float;
+		uniform mat4 modelViewMatrix;
+		uniform mat4 projectionMatrix;
+		uniform mat4 modelMatrix;
+		uniform float time;
+
+		attribute vec3 position;
+		attribute vec2 uv;
+		attribute vec3 translate;
+
         uniform float H;
         uniform float lacuarity;
         uniform float octaves;
@@ -15,6 +25,10 @@ function vertex_shader() {
         varying float height;
         varying vec3 world_pos;
         varying vec3 reflectdir;
+        varying float v_scale;
+
+
+
         float random (in vec2 p) {
             return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
         }
@@ -76,32 +90,30 @@ function vertex_shader() {
         }
         
         void main() {
-            v_uv = 16.0 * uv;
-            vec3 offset = vec3(-1.0, 0.0, 1.0);
-            vec3 newpos = position + vec3(xoffset, 0.0, yoffset);
+            vec3 newpos = translate + vec3(xoffset, 0.0, yoffset);
             float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
-            vec4 p = vec4(position.x, y, position.z, 1.0);
-            vec4 poff = vec4(newpos.x, y, newpos.z, 1.0);
-            vec3 pos = newpos + offset.zyy;
-            y = rigged_multifractal(pos.xz/10000.0); 
-            y *= scale;
-            vec4 p1 = vec4(pos.x, y, pos.z, 1.0);
-            pos = newpos + offset.yyx;
-            y = rigged_multifractal(pos.xz/10000.0); 
-            y *= scale;
-            vec4 p2 = vec4(pos.x, y, pos.z, 1.0);
-            norm = normalize(cross((p1 - poff).xyz, (p2 - poff).xyz));
-            frag_pos = (modelMatrix * p).xyz;
-            world_pos = p.xyz;
-            reflectdir = (modelViewMatrix * p).xyz;
-            gl_Position = projectionMatrix * viewMatrix * modelMatrix * p;
+            newpos.y = height + 10.0;
+
+
+			//vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
+			float sc =  1.0;
+			sc = sc * 10.0 + 10.0;
+			//mvPosition.xyz += position * sc;
+            newpos.xyz += position * sc;
+			v_scale = 1.0;
+			v_uv = uv;
+
+			gl_Position = projectionMatrix *  modelViewMatrix * vec4(newpos, 1.0);
+
+            world_pos = newpos.xyz;
         } 
     `
 }
-function fragment_shader() {
+function grass_fragment_shader() {
     return `
+		precision highp float;
         #extension GL_OES_standard_derivatives : enable
         uniform float H;
         uniform float lacuarity;
@@ -111,10 +123,7 @@ function fragment_shader() {
         uniform float scale;
         uniform vec3 sun_position;
 
-        uniform sampler2D rock_texture;
-        uniform sampler2D grassrock_texture;
-        uniform sampler2D forest_texture;
-        uniform sampler2D sand_texture;
+        uniform sampler2D grass_texture;
         uniform samplerCube env_map;
 
         uniform vec3 fogColor;
@@ -127,66 +136,36 @@ function fragment_shader() {
         varying vec2 v_uv;
         varying float height;
         varying vec3 reflectdir;
+        varying float v_scale;
 
 
         void main() {
-            vec4 rock_tex = texture2D(rock_texture, v_uv);
-            vec4 grassrock_tex = texture2D(grassrock_texture, v_uv);
-            vec4 forest_tex = texture2D(forest_texture, 32.0 * v_uv);
-            vec4 sand_tex = texture2D(sand_texture, v_uv);
+
+
+            vec4 grass_tex = texture2D(grass_texture, v_uv);
+            if (grass_tex.w < 0.5) discard;
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
             vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
-
-
-            vec4 water_color = vec4(0.0, 0.0, 1.0, 1.0);
-            vec4 colors[5];
-            colors[0] = water_color;
-            colors[1] = sand_tex;
-            colors[2] = forest_tex;
-            colors[3] = grassrock_tex;
-            colors[4] = rock_tex;
-
-            vec3 col = vec3(0);
-            float w = height/(gain * scale);
-            vec2 layers[5];
-            layers[0] = vec2(-10.0, 200.0);
-            layers[1] = vec2(150.0, 300.0);
-            layers[2] = vec2(200.0, 500.0);
-            layers[3] = vec2(400.0, 800.0);
-            layers[4] = vec2(700.0, 2000.0);
-
-
-            for (int i = 0; i < 5; i++)
-            {
-                float range = layers[i].y - layers[i].x;
-                float weight = (range - abs(height - layers[i].y)) / range;
-                weight = max(0.0, weight);
-                col += weight * colors[i].rgb;
-            }
 
             vec3 nor = norm;
             vec3 light_dir = normalize(sun_position);
             float diff = max(dot(norm, light_dir), 0.0);
             vec4 diffuse = diff * light_color;
-            vec4 fog_color = vec4(0.47, 0.5, 0.67, 0.0);
             vec3 env_color = vec3(textureCube(env_map, world_pos));
-            fog_color = mix(fog_color, vec4(env_color, 1.0), 0.9);
 
-
-
-            //col = rock_tex.xyz;
+            vec3 col = grass_tex.xyz;
             float depth = gl_FragCoord.z / gl_FragCoord.w;
             float fogFactor = smoothstep( fogNear, fogFar, depth );
 
             gl_FragColor = mix((ambient + diffuse) * vec4(col , 1.0), vec4(env_color, 1.0), 0.1 );
             gl_FragColor.rgb = mix( gl_FragColor.rgb, env_color, fogFactor );
-            //gl_FragColor = vec4(nor, 1.0);
+            gl_FragColor.a = grass_tex.a;
         }
     `
 }
 
-function generate_terrain() {
+function generate_grass() {
     var uniforms = {
         H : {type: 'float', value: 0.75}, 
         lacuarity: {type: 'float', value: 3.6},
@@ -196,25 +175,50 @@ function generate_terrain() {
         scale: {type: 'float', value: 200},
         xoffset: {type: 'float', value: 0.0},
         yoffset: {type: 'float', value: 0.0},
-        rock_texture: {type: 'sampler2D', value: null},
-        grassrock_texture: {type: 'sampler2D', value: null},
-        forest_texture: {type: 'sampler2D', value: null},
-        sand_texture: {type: 'sampler2D', value: null},
+        grass_texture: {type: 'sampler2D', value: null},
         env_map: {type: 'samplerCube', value: null},
         fogColor:    { type: "c", value: new THREE.Vector3(0.45, 0.5, 0.67) },
         fogNear:     { type: "f", value: 5000 },
         fogFar:      { type: "f", value: 20000 },
         sun_position : {type: 'vec3', value: new THREE.Vector3(0, 1, 0)},
     };
-    var material = new THREE.ShaderMaterial({
+    var material = new THREE.RawShaderMaterial({
         uniforms: uniforms,
-        fragmentShader: fragment_shader(),
-        vertexShader: vertex_shader(),
+        fragmentShader: grass_fragment_shader(),
+        vertexShader: grass_vertex_shader(),
+        depthTest: true,
+        side: THREE.DoubleSide,
+        depthWrite: true
+
     });
-    var terrain_geom = new THREE.PlaneBufferGeometry(20000, 20000, 6*255, 6*255);
-    terrain_geom.rotateX( - Math.PI / 2 );
 
-    var terrain = new THREE.Mesh( terrain_geom, material );
+	var circleGeometry = new THREE.CircleBufferGeometry( 1, 6 );
 
-    return terrain;
+    var geometry = new THREE.InstancedBufferGeometry();
+    geometry.index = circleGeometry.index;
+    geometry.attributes = circleGeometry.attributes;
+
+    var dim = 512;
+    var particleCount = dim * dim;
+
+    var translateArray = new Float32Array( particleCount * 3 );
+
+
+    var i3 = 0;
+    for (var x = -10000.0; x < 10000; x += 20000.0/(dim) ) {
+        for (var z = -10000.0; z < 10000; z += 20000.0/(dim) ) {
+            translateArray[ i3 + 0 ] = x;
+            translateArray[ i3 + 1 ] = 0.0;
+            translateArray[ i3 + 2 ] = z;
+            i3 += 3;
+        }
+    }
+
+    geometry.setAttribute( 'translate', new THREE.InstancedBufferAttribute( translateArray, 3 ) );
+
+    var grass = new THREE.Mesh( geometry, material );
+    grass.scale.set( 1, 1, 1 );
+
+
+    return grass;
 }
