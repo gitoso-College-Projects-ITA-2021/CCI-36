@@ -1,7 +1,6 @@
 // Three.js setup
 var renderer = new THREE.WebGLRenderer({
   canvas:document.getElementById("main-canvas"),
-    alpha:true,
   antialias:true
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -13,7 +12,7 @@ gl.getExtension('OES_standard_derivatives');
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
+var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 100000);
 
 var loader = new THREE.TextureLoader()
 
@@ -47,7 +46,6 @@ scene.background = cubeRenderTarget;
 
 var terrain = generate_terrain();
 //sky.scale.setScalar( 450000 );
-scene.add(terrain);
 //scene.add( sky );
 
 var rock_texture = loader.load('assets/terrain_textures/rock_ground_diff_1k.jpg');
@@ -82,6 +80,7 @@ terrain.material.uniforms.env_map.value = scene.background;
 
 var grass = generate_grass();
 scene.add(grass);
+scene.add(terrain);
 
 var grass_texture = loader.load('assets/billboardgrass0002.png');
 sand_texture.wrapS = THREE.RepeatWrapping;

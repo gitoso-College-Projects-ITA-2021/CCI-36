@@ -1,14 +1,16 @@
 function grass_vertex_shader() {
     return `
-		precision highp float;
-		uniform mat4 modelViewMatrix;
-		uniform mat4 projectionMatrix;
-		uniform mat4 modelMatrix;
-		uniform float time;
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat4 modelMatrix;
+        uniform mat4 viewMatrix;
+        uniform vec3 cameraPosition;
+        uniform float time;
 
-		attribute vec3 position;
-		attribute vec2 uv;
-		attribute vec3 translate;
+        attribute vec3 position;
+        attribute vec2 uv;
+        attribute vec3 translate;
 
         uniform float H;
         uniform float lacuarity;
@@ -62,7 +64,7 @@ function grass_vertex_shader() {
                 value *= (noise(st) + offset) * pow (2.0, -H * float(i));
                 st *= 2.0;
             }
-                
+
             return value;
         }
 
@@ -88,7 +90,7 @@ function grass_vertex_shader() {
 
             return result;
         }
-        
+
         void main() {
             vec3 newpos = translate + vec3(xoffset, 0.0, yoffset);
             float y = rigged_multifractal(newpos.xz/10000.0); 
@@ -97,15 +99,37 @@ function grass_vertex_shader() {
             newpos.y = height + 10.0;
 
 
-			//vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
-			float sc =  1.0;
-			sc = sc * 10.0 + 10.0;
-			//mvPosition.xyz += position * sc;
-            newpos.xyz += position * sc;
-			v_scale = 1.0;
-			v_uv = uv;
+            //vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
+            float sc =  1.0;
+            sc = sc * 10.0 + 10.0;
+            //mvPosition.xyz += position * sc;
+            v_scale = 1.0;
+            v_uv = uv;
 
-			gl_Position = projectionMatrix *  modelViewMatrix * vec4(newpos, 1.0);
+            mat3 modelmat;
+            vec3 vup = vec3(0.0, 1.0, 0.0);
+            vec3 v1 = normalize(cameraPosition - translate);
+            v1.y = 0.0;
+            vec3 v3 = normalize(cross(vup, v1));
+
+            modelmat[0][0] = v1.x;
+            modelmat[0][1] = v1.y;
+            modelmat[0][2] = v1.z;
+
+            //// Second colunm.
+            modelmat[1][0] = vup.x;
+            modelmat[1][1] = vup.y;
+            modelmat[1][2] = vup.z;
+
+            //// Thrid colunm.
+            modelmat[2][0] = v3.x;
+            modelmat[2][1] = v3.y;
+            modelmat[2][2] = v3.z;
+            vec3 pos = position.xyz;
+            pos = modelmat * pos;
+
+            newpos.xyz += pos * sc;
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(newpos, 1.0);
 
             world_pos = newpos.xyz;
         } 
@@ -113,7 +137,7 @@ function grass_vertex_shader() {
 }
 function grass_fragment_shader() {
     return `
-		precision highp float;
+        precision highp float;
         #extension GL_OES_standard_derivatives : enable
         uniform float H;
         uniform float lacuarity;
@@ -143,7 +167,7 @@ function grass_fragment_shader() {
 
 
             vec4 grass_tex = texture2D(grass_texture, v_uv);
-            if (grass_tex.w < 0.5) discard;
+            if (grass_tex.w < 0.5 || height < 200.0) discard;
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
             vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
@@ -187,18 +211,19 @@ function generate_grass() {
         fragmentShader: grass_fragment_shader(),
         vertexShader: grass_vertex_shader(),
         depthTest: true,
-        side: THREE.DoubleSide,
+        //side: THREE.DoubleSide,
         depthWrite: true
 
     });
 
-	var circleGeometry = new THREE.CircleBufferGeometry( 1, 6 );
+    var circleGeometry = new THREE.PlaneBufferGeometry( 1, 1, 2, 2);
+    circleGeometry.rotateY( - Math.PI / 2 );
 
     var geometry = new THREE.InstancedBufferGeometry();
     geometry.index = circleGeometry.index;
     geometry.attributes = circleGeometry.attributes;
 
-    var dim = 512;
+    var dim = 1024;
     var particleCount = dim * dim;
 
     var translateArray = new Float32Array( particleCount * 3 );
@@ -217,6 +242,7 @@ function generate_grass() {
     geometry.setAttribute( 'translate', new THREE.InstancedBufferAttribute( translateArray, 3 ) );
 
     var grass = new THREE.Mesh( geometry, material );
+    grass.frustumCulled = false;
     grass.scale.set( 1, 1, 1 );
 
 
