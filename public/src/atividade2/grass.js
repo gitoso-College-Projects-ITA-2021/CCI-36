@@ -21,6 +21,15 @@ function grass_vertex_shader() {
         uniform float xoffset;
         uniform float yoffset;
 
+        uniform float speed;
+        uniform float min_strength;
+        uniform float max_strength;
+        uniform float interval;
+        uniform float detail;
+        uniform float distortion;
+        uniform vec2 direction;
+        uniform float height_offset;
+
         varying vec3 frag_pos;
         varying vec3 norm;
         varying vec2 v_uv;
@@ -91,17 +100,31 @@ function grass_vertex_shader() {
             return result;
         }
 
+        vec3 get_wind(mat3 modelmat, vec3 vertex, float timer){
+            vec3 pos = modelmat * mix(vec3(1.0), vertex, distortion);
+            float tm = timer * speed + pos.x + pos.z;
+            float diff = pow(max_strength - min_strength, 2.0);
+            float strength = clamp(min_strength + diff + sin(tm / interval) * diff, min_strength, max_strength);
+            float wind = (sin(tm) + cos(tm * detail)) * strength * max(0.0, vertex.y - height_offset);
+            vec2 dir = normalize(direction);
+            
+            return vec3(wind * dir.x, 0.0, wind * dir.y);
+        }
+
         void main() {
             vec3 newpos = translate + vec3(xoffset, 0.0, yoffset);
+            newpos.x += 20.0 * noise(newpos.xz);
+            newpos.z += 10.0 * noise(newpos.zx);
             float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
-            newpos.y = height + 10.0;
+            newpos.y = height + 5.0;
 
 
             //vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
-            float sc =  1.0;
-            sc = sc * 10.0 + 10.0;
+            float sc =  10.0 * noise(newpos.xz);
+            sc = 3.0;
+            sc = sc * 5.0 + 5.0;
             //mvPosition.xyz += position * sc;
             v_scale = 1.0;
             v_uv = uv;
@@ -126,9 +149,12 @@ function grass_vertex_shader() {
             modelmat[2][1] = v3.y;
             modelmat[2][2] = v3.z;
             vec3 pos = position.xyz;
+
             pos = modelmat * pos;
 
+            //pos += get_wind(modelmat, pos, time);
             newpos.xyz += pos * sc;
+            //newpos += get_wind(modelmat, pos, time);
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(newpos, 1.0);
 
             world_pos = newpos.xyz;
@@ -146,6 +172,7 @@ function grass_fragment_shader() {
         uniform float gain;
         uniform float scale;
         uniform vec3 sun_position;
+
 
         uniform sampler2D grass_texture;
         uniform samplerCube env_map;
@@ -167,7 +194,7 @@ function grass_fragment_shader() {
 
 
             vec4 grass_tex = texture2D(grass_texture, v_uv);
-            if (grass_tex.w < 0.5 || height < 200.0) discard;
+            if (grass_tex.w < 0.5 || height < 300.0 || height > 700.0) discard;
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
             vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
@@ -205,7 +232,17 @@ function generate_grass() {
         fogNear:     { type: "f", value: 5000 },
         fogFar:      { type: "f", value: 20000 },
         sun_position : {type: 'vec3', value: new THREE.Vector3(0, 1, 0)},
+        speed: {type: 'float', value: 10.0},
+        min_strength: {type: 'float', value: 0.0},
+        max_strength: {type: 'float', value: 20.0},
+        interval: {type: 'float', value: 1.5},
+        detail: {type: 'float', value: 94.0},
+        distortion: {type: 'float', value: 0.3},
+        direction: {type: 'float', value: new THREE.Vector2(0.0, 1.0).normalize()},
+        height_offset: {type: 'float', value: 0.0},
+        time: {type: 'float', value: 0.0},
     };
+
     var material = new THREE.RawShaderMaterial({
         uniforms: uniforms,
         fragmentShader: grass_fragment_shader(),
