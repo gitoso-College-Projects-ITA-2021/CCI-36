@@ -22,12 +22,6 @@ scene.add( sun_light );
 //scene.fog = new THREE.Fog( 0xcce0ff, 500, 1000 );
 
 var sky = generate_sky();
-var sky_uniforms = sky.material.uniforms;
-sky_uniforms[ 'turbidity' ].value = 10;
-sky_uniforms[ 'rayleigh' ].value = 2;
-sky_uniforms[ 'luminance' ].value = 1;
-sky_uniforms[ 'mie_coeff' ].value = 0.005;
-sky_uniforms[ 'mie_directionalg' ].value = 0.8;
 
 var cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 
     128, 
@@ -98,6 +92,7 @@ controls.autoForward = false;
 controls.dragToLook = true;
 //controls.mouseDragOn = true;
 var terrain_uniforms = terrain.material.uniforms;
+var sky_uniforms = sky.material.uniforms;
 var parameters = {
     distance: 400,
     inclination: 0.3,
@@ -113,8 +108,13 @@ updateSun();
 
 var gui = new dat.GUI();
 var folder = gui.addFolder( 'Sky' );
-folder.add( parameters, 'inclination', 0, 0.5, 0.0001 ).onChange( updateSun );
+folder.add( parameters, 'inclination', 0, 0.7, 0.0001 ).onChange( updateSun );
 folder.add( parameters, 'azimuth', 0, 1, 0.0001 ).onChange( updateSun );
+folder.add( sky_uniforms.rayleigh, 'value', 0, 10, 0.0001 ).onChange( updateSun ).name('Rayleigh');
+folder.add( sky_uniforms.turbidity, 'value', 0, 5, 0.0001 ).onChange( updateSun ).name('Turbidity');
+folder.add( sky_uniforms.luminance, 'value', 0, 5, 0.00001 ).onChange( updateSun ).name('Luminance');
+folder.add( sky_uniforms.mie_coeff, 'value', 0, 0.01, 0.00001 ).onChange( updateSun ).name('Mie Coeff');
+folder.add( sky_uniforms.mie_directionalg, 'value', 0, 1, 0.00001 ).onChange( updateSun ).name('Mie Dir G');
 folder.add( terrain_uniforms.fogNear, 'value', 0, 50000, 0.01 ).name('Fog Near');
 folder.add( terrain_uniforms.fogFar, 'value', 0, 50000, 0.01 ).name('Fog Far');
 folder.open();

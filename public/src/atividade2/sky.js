@@ -155,7 +155,7 @@ function generate_sky() {
         rayleigh : {type: 'float', value: 1},
         turbidity : {type: 'float', value: 2},
         luminance : {type: 'float', value: 1},
-        mie_coeff : {type: 'float', value: 0.005},
+        mie_coeff : {type: 'float', value: 0.00005},
         mie_directionalg : {type: 'float', value: 0.8},
     };
     var material = new THREE.ShaderMaterial({
