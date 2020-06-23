@@ -12,7 +12,7 @@ gl.getExtension('OES_standard_derivatives');
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100000);
+var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
 
 var loader = new THREE.TextureLoader()
 
@@ -77,6 +77,8 @@ terrain.material.uniforms.forest_texture.value = forest_texture;
 
 terrain.material.uniforms.sand_texture.value = sand_texture;
 
+terrain.material.uniforms.env_map.value = scene.background;
+
 camera.position.set(3000.0,  400.0, 700.0);
 camera.lookAt(0.0, 0.0, 0.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
@@ -115,6 +117,7 @@ folder.add(terrain_uniforms.xoffset, 'value', 0, 10000, 0.001).name('xoffset');
 folder.add(terrain_uniforms.yoffset, 'value', 0, 10000, 0.001).name('yoffset');
 folder.open();
 
+
 // instantiate boat
 var boatMtlLoader = new THREE.MTLLoader();
 boatMtlLoader.setPath('assets/boat/');
@@ -149,6 +152,7 @@ boatMtlLoader.load('boat2.mtl', function(materials){
     scene.add( object );
   });
 });
+
 
 var last_time = 0.0;
 var dt = 0;

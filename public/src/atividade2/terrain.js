@@ -14,6 +14,7 @@ function vertex_shader() {
         varying vec2 v_uv;
         varying float height;
         varying vec3 world_pos;
+        varying vec3 reflectdir;
         float random (in vec2 p) {
             return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
         }
@@ -94,6 +95,7 @@ function vertex_shader() {
             norm = normalize(cross((p1 - poff).xyz, (p2 - poff).xyz));
             frag_pos = (modelMatrix * p).xyz;
             world_pos = p.xyz;
+            reflectdir = (modelViewMatrix * p).xyz;
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * p;
         } 
     `
@@ -113,6 +115,7 @@ function fragment_shader() {
         uniform sampler2D grassrock_texture;
         uniform sampler2D forest_texture;
         uniform sampler2D sand_texture;
+        uniform samplerCube env_map;
 
         uniform vec3 fogColor;
         uniform float fogNear;
@@ -123,6 +126,7 @@ function fragment_shader() {
         varying vec3 norm;
         varying vec2 v_uv;
         varying float height;
+        varying vec3 reflectdir;
 
 
         void main() {
@@ -165,14 +169,18 @@ function fragment_shader() {
             vec3 light_dir = normalize(sun_position);
             float diff = max(dot(norm, light_dir), 0.0);
             vec4 diffuse = diff * light_color;
-            const vec4 fog_color = vec4(0.47, 0.5, 0.67, 0.0);
+            vec4 fog_color = vec4(0.47, 0.5, 0.67, 0.0);
+            vec3 env_color = vec3(textureCube(env_map, world_pos));
+            fog_color = mix(fog_color, vec4(env_color, 1.0), 0.9);
+
 
 
             //col = rock_tex.xyz;
-            gl_FragColor = (ambient + diffuse) * vec4(col , 1.0);
             float depth = gl_FragCoord.z / gl_FragCoord.w;
             float fogFactor = smoothstep( fogNear, fogFar, depth );
-            //gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+
+            gl_FragColor = mix((ambient + diffuse) * vec4(col , 1.0), vec4(env_color, 1.0), 0.1 );
+            gl_FragColor.rgb = mix( gl_FragColor.rgb, env_color, fogFactor );
             //gl_FragColor = vec4(nor, 1.0);
         }
     `
@@ -194,9 +202,10 @@ function generate_terrain() {
         grassrock_texture: {type: 'sampler2D', value: null},
         forest_texture: {type: 'sampler2D', value: null},
         sand_texture: {type: 'sampler2D', value: null},
+        env_map: {type: 'samplerCube', value: null},
         fogColor:    { type: "c", value: new THREE.Vector3(0.45, 0.5, 0.67) },
-        fogNear:     { type: "f", value: 500 },
-        fogFar:      { type: "f", value: 10000 },
+        fogNear:     { type: "f", value: 5000 },
+        fogFar:      { type: "f", value: 20000 },
         sun_position : {type: 'vec3', value: new THREE.Vector3(0, 1, 0)},
     };
     var material = new THREE.ShaderMaterial({
