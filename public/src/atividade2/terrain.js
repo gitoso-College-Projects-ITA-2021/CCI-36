@@ -187,8 +187,6 @@ function fragment_shader() {
 }
 
 function generate_terrain() {
-    var terrain_geom = new THREE.PlaneBufferGeometry(20000, 20000, 6*255, 6*255);
-    terrain_geom.rotateX( - Math.PI / 2 );
     var uniforms = {
         H : {type: 'float', value: 0.75}, 
         lacuarity: {type: 'float', value: 3.6},
@@ -213,6 +211,8 @@ function generate_terrain() {
         fragmentShader: fragment_shader(),
         vertexShader: vertex_shader(),
     });
+    var terrain_geom = new THREE.PlaneBufferGeometry(20000, 20000, 6*255, 6*255);
+    terrain_geom.rotateX( - Math.PI / 2 );
 
     var terrain = new THREE.Mesh( terrain_geom, material );
 

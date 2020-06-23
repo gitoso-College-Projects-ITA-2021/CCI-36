@@ -12,7 +12,7 @@ gl.getExtension('OES_standard_derivatives');
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100000);
+var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 100000);
 
 var loader = new THREE.TextureLoader()
 
@@ -45,7 +45,6 @@ scene.background = cubeRenderTarget;
 
 var terrain = generate_terrain();
 //sky.scale.setScalar( 450000 );
-scene.add(terrain);
 //scene.add( sky );
 
 var rock_texture = loader.load('assets/terrain_textures/rock_ground_diff_1k.jpg');
@@ -78,6 +77,18 @@ terrain.material.uniforms.sand_texture.value = sand_texture;
 
 terrain.material.uniforms.env_map.value = scene.background;
 
+var grass = generate_grass();
+scene.add(grass);
+scene.add(terrain);
+
+var grass_texture = loader.load('assets/billboardgrass0002.png');
+sand_texture.wrapS = THREE.RepeatWrapping;
+sand_texture.wrapT = THREE.RepeatWrapping;
+sand_texture.repeat.set( 4, 4 );
+
+grass.material.uniforms.grass_texture.value = grass_texture;
+grass.material.uniforms.env_map.value = scene.background;
+
 camera.position.set(3000.0,  400.0, 700.0);
 camera.lookAt(0.0, 0.0, 0.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
@@ -89,7 +100,7 @@ controls.dragToLook = true;
 var terrain_uniforms = terrain.material.uniforms;
 var parameters = {
     distance: 400,
-    inclination: 0.49,
+    inclination: 0.3,
     azimuth: 0.205
 };
 
@@ -117,6 +128,25 @@ folder.add(terrain_uniforms.xoffset, 'value', 0, 10000, 0.001).name('xoffset');
 folder.add(terrain_uniforms.yoffset, 'value', 0, 10000, 0.001).name('yoffset');
 folder.open();
 
+var grass_uniforms = grass.material.uniforms;
+grass_uniforms.H = terrain_uniforms.H;
+grass_uniforms.lacuarity = terrain_uniforms.lacuarity;
+grass_uniforms.octaves = terrain_uniforms.octaves;
+grass_uniforms.offset = terrain_uniforms.offset;
+grass_uniforms.gain = terrain_uniforms.gain;
+grass_uniforms.scale = terrain_uniforms.scale;
+grass_uniforms.xoffset = terrain_uniforms.xoffset;
+grass_uniforms.yoffset = terrain_uniforms.yoffset;
+
+var folder = gui.addFolder('Grass');
+folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
+folder.add(grass_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
+folder.add(grass_uniforms.max_strength, 'value', 1, 200, 0.001).name('Max Strength');
+folder.add(grass_uniforms.interval, 'value', 0, 10, 0.001).name('Interval');
+folder.add(grass_uniforms.detail, 'value', 0, 100, 0.001).name('Detail');
+folder.add(grass_uniforms.distortion, 'value', 0, 1, 0.001).name('Distortion');
+folder.add(grass_uniforms.height_offset, 'value', 0, 10, 0.001).name('Height offset');
+folder.open();
 
 // instantiate boat
 var boatMtlLoader = new THREE.MTLLoader();
@@ -181,6 +211,7 @@ scene.add( water );
 
 
 var last_time = 0.0;
+var total = 0.0;
 var dt = 0;
 var count = 0;
 function animate() {  
@@ -194,9 +225,12 @@ function animate() {
     dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
     dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
+    total = dt/2.0;
+    grass_uniforms.time.value = total;
+
 
     count += 1;
-    //console.log(dt);
+    console.log(dt);
 }
 
 function onWindowResize() {
