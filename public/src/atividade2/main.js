@@ -170,6 +170,8 @@ boatMtlLoader.load('boat.mtl', function(materials){
 });
 
 // instantiate boat
+var boat;
+
 var boatMtlLoader = new THREE.MTLLoader();
 boatMtlLoader.setPath('assets/boat2/');
 boatMtlLoader.load('boat2.mtl', function(materials){
@@ -178,7 +180,8 @@ boatMtlLoader.load('boat2.mtl', function(materials){
   var boatloader = new THREE.OBJLoader();
   boatloader.setMaterials(materials);
   boatloader.setPath('assets/boat2/');
-  boatloader.load('boat2.obj',function ( object ) {
+  boatloader.load('boat2.obj', function ( object ) {
+    object.name = "boat2";
     object.rotateX(THREE.Math.degToRad(-90));
     object.position.y = 180;
     object.position.x = 1800;
@@ -186,6 +189,8 @@ boatMtlLoader.load('boat2.mtl', function(materials){
     scene.add( object );
   });
 });
+
+
 
 
 var waterGeometry = new THREE.PlaneBufferGeometry( 50000, 50000 );
@@ -222,6 +227,11 @@ function animate() {
     requestAnimationFrame(animate)
     render()
 
+    var boat2 = scene.getObjectByName( "boat2" );
+    boat2.position.y = 95 + 10 * Math.sin(count/40);
+    boat2.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/30) / 80)
+    boat2.rotateX(THREE.Math.degToRad(-90));
+
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
     controls.update( dt );
@@ -234,7 +244,7 @@ function animate() {
 
 
     count += 1;
-    console.log(dt);
+    //console.log(dt);
 }
 
 function onWindowResize() {
@@ -249,7 +259,7 @@ function render() {
 
   var time = performance.now() * 0.001;
   water.material.uniforms[ 'time' ].value += 1.1 / 60.0;
-  //updateSun();
+  updateSun();
   renderer.render( scene, camera );
 
 }
