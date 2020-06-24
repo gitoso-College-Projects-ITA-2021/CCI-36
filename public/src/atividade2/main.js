@@ -185,6 +185,9 @@ boatMtlLoader.load('boat.mtl', function(materials){
   boatloader.setPath('assets/boat/');
   boatloader.load('boat.obj',function ( object ) {
     object.name = "boat1";
+    object.scale.x = 0.5;
+    object.scale.y = 0.5;
+    object.scale.z = 0.5;
     object.position.y = 200;
     object.position.x = 3000;
     object.position.z = 1000;
@@ -203,6 +206,9 @@ boatMtlLoader.load('boat2.mtl', function(materials){
   boatloader.setPath('assets/boat2/');
   boatloader.load('boat2.obj', function ( object ) {
     object.name = "boat2";
+    object.scale.x = 0.5;
+    object.scale.y = 0.5;
+    object.scale.z = 0.5;
     object.rotateX(THREE.Math.degToRad(-90));
     object.position.y = 180;
     object.position.x = 1800;
@@ -271,7 +277,7 @@ function animate() {
 
     var boat2 = scene.getObjectByName( "boat2" );
     if(boat2) {
-      boat2.position.y = 95 + 10 * Math.sin(count/40);
+      boat2.position.y = 130 + 10 * Math.sin(count/40);
       boat2.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/30) / 80)
       boat2.rotateX(THREE.Math.degToRad(-90));
     }
