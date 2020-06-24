@@ -83,8 +83,8 @@ grass_texture.repeat.set( 4, 4 );
 grass.material.uniforms.grass_texture.value = grass_texture;
 grass.material.uniforms.env_map.value = scene.background;
 
-camera.position.set(3000.0,  400.0, 700.0);
-camera.lookAt(0.0, 0.0, 0.0);
+camera.position.set(7500.0,  1200.0, 6000.0);
+camera.lookAt(3000.0, 200.0, 1000.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
 controls.domElement = renderer.domElement;
 controls.rollSpeed = Math.PI / 24;
@@ -104,6 +104,27 @@ function updateSun() {
     terrain.material.uniforms['sun_position'].value.copy(sun_light.position).normalize();
     cubeCamera.update(renderer, sky);
 }
+
+// Initial values (Sky)
+parameters.inclination = 0.52
+parameters.azimuth = 0.7
+sky_uniforms.rayleigh.value = 5.0
+sky_uniforms.turbidity.value = 3.44
+sky_uniforms.luminance.value = 0.85
+sky_uniforms.mie_coeff.value = 0.004
+sky_uniforms.mie_directionalg.value = 0.07
+
+// Initial values (Terrain)
+terrain_uniforms.H.value = 0.732
+terrain_uniforms.lacuarity.value = 5.381
+terrain_uniforms.octaves.value = 20
+terrain_uniforms.offset.value = 1
+terrain_uniforms.gain.value = 1.6
+terrain_uniforms.scale.value = 204
+terrain_uniforms.xoffset.value = 0
+terrain_uniforms.yoffset.value = 926
+
+
 updateSun();
 
 var gui = new dat.GUI();
