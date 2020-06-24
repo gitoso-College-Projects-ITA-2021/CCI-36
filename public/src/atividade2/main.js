@@ -72,17 +72,17 @@ terrain.material.uniforms.sand_texture.value = sand_texture;
 
 terrain.material.uniforms.env_map.value = scene.background;
 
-var grass = generate_grass();
-scene.add(grass);
+var tree = generate_tree();
+scene.add(tree);
 scene.add(terrain);
 
-var grass_texture = loader.load('assets/arvore2.png');
-grass_texture.wrapS = THREE.RepeatWrapping;
-grass_texture.wrapT = THREE.RepeatWrapping;
-grass_texture.repeat.set( 4, 4 );
+var tree_texture = loader.load('assets/arvore2.png');
+tree_texture.wrapS = THREE.RepeatWrapping;
+tree_texture.wrapT = THREE.RepeatWrapping;
+tree_texture.repeat.set( 4, 4 );
 
-grass.material.uniforms.grass_texture.value = grass_texture;
-grass.material.uniforms.env_map.value = scene.background;
+tree.material.uniforms.tree_texture.value = tree_texture;
+tree.material.uniforms.env_map.value = scene.background;
 
 camera.position.set(7500.0,  1200.0, 6000.0);
 camera.lookAt(3000.0, 200.0, 1000.0);
@@ -150,28 +150,28 @@ folder.add(terrain_uniforms.xoffset, 'value', 0, 10000, 0.001).name('xoffset');
 folder.add(terrain_uniforms.yoffset, 'value', 0, 10000, 0.001).name('yoffset');
 folder.open();
 
-var grass_uniforms = grass.material.uniforms;
-grass_uniforms.H = terrain_uniforms.H;
-grass_uniforms.lacuarity = terrain_uniforms.lacuarity;
-grass_uniforms.octaves = terrain_uniforms.octaves;
-grass_uniforms.offset = terrain_uniforms.offset;
-grass_uniforms.gain = terrain_uniforms.gain;
-grass_uniforms.scale = terrain_uniforms.scale;
-grass_uniforms.xoffset = terrain_uniforms.xoffset;
-grass_uniforms.yoffset = terrain_uniforms.yoffset;
-grass_uniforms.fogNear = terrain_uniforms.fogNear;
-grass_uniforms.fogFar = terrain_uniforms.fogFar;
+var tree_uniforms = tree.material.uniforms;
+tree_uniforms.H = terrain_uniforms.H;
+tree_uniforms.lacuarity = terrain_uniforms.lacuarity;
+tree_uniforms.octaves = terrain_uniforms.octaves;
+tree_uniforms.offset = terrain_uniforms.offset;
+tree_uniforms.gain = terrain_uniforms.gain;
+tree_uniforms.scale = terrain_uniforms.scale;
+tree_uniforms.xoffset = terrain_uniforms.xoffset;
+tree_uniforms.yoffset = terrain_uniforms.yoffset;
+tree_uniforms.fogNear = terrain_uniforms.fogNear;
+tree_uniforms.fogFar = terrain_uniforms.fogFar;
 
 
 
-//var folder = gui.addFolder('Grass');
-//folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
-//folder.add(grass_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
-//folder.add(grass_uniforms.max_strength, 'value', 1, 200, 0.001).name('Max Strength');
-//folder.add(grass_uniforms.interval, 'value', 0, 10, 0.001).name('Interval');
-//folder.add(grass_uniforms.detail, 'value', 0, 100, 0.001).name('Detail');
-//folder.add(grass_uniforms.distortion, 'value', 0, 1, 0.001).name('Distortion');
-//folder.add(grass_uniforms.height_offset, 'value', 0, 10, 0.001).name('Height offset');
+//var folder = gui.addFolder('tree');
+//folder.add(tree_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
+//folder.add(tree_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
+//folder.add(tree_uniforms.max_strength, 'value', 1, 200, 0.001).name('Max Strength');
+//folder.add(tree_uniforms.interval, 'value', 0, 10, 0.001).name('Interval');
+//folder.add(tree_uniforms.detail, 'value', 0, 100, 0.001).name('Detail');
+//folder.add(tree_uniforms.distortion, 'value', 0, 1, 0.001).name('Distortion');
+//folder.add(tree_uniforms.height_offset, 'value', 0, 10, 0.001).name('Height offset');
 //folder.open();
 
 // instantiate boat
@@ -303,7 +303,7 @@ function animate() {
     dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
     total = dt/2.0;
-    //grass_uniforms.time.value = total;
+    //tree_uniforms.time.value = total;
 
     count += 1;
 }
