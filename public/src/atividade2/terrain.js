@@ -102,7 +102,6 @@ function vertex_shader() {
 }
 function fragment_shader() {
     return `
-        #extension GL_OES_standard_derivatives : enable
         uniform float H;
         uniform float lacuarity;
         uniform float octaves;

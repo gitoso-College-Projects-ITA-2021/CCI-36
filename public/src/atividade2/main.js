@@ -6,10 +6,6 @@ var renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio( window.devicePixelRatio );
 
-var gl = renderer.domElement.getContext('webgl') ||
-                renderer.domElement.getContext('experimental-webgl');
-gl.getExtension('OES_standard_derivatives');
-
 var scene = new THREE.Scene()
 
 var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 15000);
