@@ -96,7 +96,7 @@ var terrain_uniforms = terrain.material.uniforms;
 var sky_uniforms = sky.material.uniforms;
 var parameters = {
     distance: 400,
-    inclination: 0.45,
+    inclination: 0.489,
     azimuth: 0.14
 };
 
@@ -107,7 +107,7 @@ function updateSun() {
 }
 
 // Initial values (Sky)
-sky_uniforms.rayleigh.value = 1;
+sky_uniforms.rayleigh.value = 3.46;
 sky_uniforms.turbidity.value = 2;
 sky_uniforms.luminance.value = 1;
 sky_uniforms.mie_coeff.value = 0.00005;

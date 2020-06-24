@@ -12,6 +12,7 @@ function sky_vertex_shader() {
         varying vec3 v_betar;
         varying vec3 v_betam;
         varying float v_sune;
+        varying float v_dist;
 
         const float e = 2.71828182845904523536028747135266249775724709369995957;
         const float pi = 3.141592653589793238462643383279502884197169;
@@ -42,12 +43,14 @@ function sky_vertex_shader() {
             vec4 world_pos = modelMatrix * vec4(position, 1.0);
             v_worldpos = world_pos.xyz;
 
+            v_dist = distance(world_pos.xyz, sun_position);
+
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
             gl_Position.z = gl_Position.w;
 
             v_sundir = normalize(sun_position);
-            v_sune = sun_intensity(dot(v_sundir, up));
-            v_sunfade = 1.0 - clamp(1.0 - exp((sun_position.y/450000.0)), 0.0, 1.0);
+            v_sune = 1.5 * sun_intensity(dot(v_sundir, up));
+            v_sunfade = 1.5 - clamp(1.0 - exp((sun_position.y/450000.0)), 1.3, 2.0);
 
             float rayleigh_coeff = rayleigh - (1.0 * (1.0 - v_sunfade));
 
@@ -66,6 +69,7 @@ function sky_fragment_shader() {
         varying vec3 v_betar;
         varying vec3 v_betam;
         varying float v_sune;
+        varying float v_dist;
 
         uniform float luminance;
         uniform float mie_directionalg;
@@ -81,7 +85,7 @@ function sky_fragment_shader() {
 
         const float raylegh_zenith_length = 8.4E3;
         const float mie_zenith_length = 1.25E3;
-        const float sun_angular_diameter_cos = 0.999956676946448443553574619906976478926848692873900859324;
+        const float sun_angular_diameter_cos = 0.99855666946448443553574619906976478926848692873900859324;
 
 		const float THREE_OVER_SIXTEENPI = 0.05968310365946075;
         const float ONE_OVER_FOURPI = 0.07957747154594767;
@@ -134,15 +138,16 @@ function sky_fragment_shader() {
             vec2 uv = vec2(phi, theta) / vec2(2.0 * pi, pi) + vec2(0.5, 0.0);
             vec3 L0 = vec3(0.1) * Fex;
 
-            float sundisk = smoothstep(sun_angular_diameter_cos, sun_angular_diameter_cos + 0.00002, cos_theta);
-            L0 += (v_sune * 19000.0 * Fex) * sundisk;
+            float sundisk = smoothstep(sun_angular_diameter_cos, sun_angular_diameter_cos + 0.2, cos_theta);
+            L0 += (v_sune * 700000.0 * Fex) * sundisk;
 
-            vec3 tex_color = (Lin + L0) * 0.04 + vec3(0.0, 0.0003, 0.00075);
+            vec3 tex_color = (Lin + L0) * 0.2 + vec3(0.0, 0.0003, 0.00075);
 
             vec3 curr = uncharted2tonemap((log2(2.0 / pow(luminance, 4.0))) * tex_color);
             vec3 color = curr * whiteScale;
 
             vec3 ret_color = pow(color, vec3(1.0 / (1.2 + (1.2 * v_sunfade))));
+
             gl_FragColor = vec4(ret_color, 1.0);
         }
     `
