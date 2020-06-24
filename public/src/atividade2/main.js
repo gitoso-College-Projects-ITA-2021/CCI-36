@@ -244,8 +244,8 @@ function update_water() {
 }
 
 var perf_parms = {
-    enable_reflection: false,
-    delayed_reflection: false,
+    enable_reflection: true,
+    delayed_reflection: true,
     reflection_function: update_water,
     mov_speed: 500,
     rot_speed: 0.1,
