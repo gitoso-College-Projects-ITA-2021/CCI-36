@@ -6,6 +6,11 @@ var renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio( window.devicePixelRatio );
 
+var stats = new Stats();
+console.log(stats);
+var body = document.getElementsByTagName('body')[0];
+body.appendChild( stats.dom );
+
 var scene = new THREE.Scene()
 
 var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 15000);
@@ -68,7 +73,7 @@ terrain.material.uniforms.sand_texture.value = sand_texture;
 terrain.material.uniforms.env_map.value = scene.background;
 
 var grass = generate_grass();
-scene.add(grass);
+//scene.add(grass);
 scene.add(terrain);
 
 var grass_texture = loader.load('assets/arvore2.png');
@@ -113,7 +118,7 @@ sky_uniforms.mie_directionalg.value = 0.07
 // Initial values (Terrain)
 terrain_uniforms.H.value = 0.732
 terrain_uniforms.lacuarity.value = 5.381
-terrain_uniforms.octaves.value = 20
+//terrain_uniforms.octaves.value = 20
 terrain_uniforms.offset.value = 1
 terrain_uniforms.gain.value = 1.6
 terrain_uniforms.scale.value = 204
@@ -139,7 +144,7 @@ folder.open();
 var folder = gui.addFolder('Terrain');
 folder.add(terrain_uniforms.H, 'value', 0, 1, 0.001).name('H');
 folder.add(terrain_uniforms.lacuarity, 'value', 0, 20, 0.001).name('lacuarity');
-folder.add(terrain_uniforms.octaves, 'value', 1, 20, 1).name('octaves');
+//folder.add(terrain_uniforms.octaves, 'value', 1, 20, 1).name('octaves');
 folder.add(terrain_uniforms.offset, 'value', 0, 2, 0.001).name('offset');
 folder.add(terrain_uniforms.gain, 'value', 0, 4, 0.001).name('gain');
 folder.add(terrain_uniforms.scale, 'value', 1, 1000, 1).name('scale');
@@ -159,15 +164,15 @@ grass_uniforms.yoffset = terrain_uniforms.yoffset;
 grass_uniforms.fogNear = terrain_uniforms.fogNear;
 grass_uniforms.fogFar = terrain_uniforms.fogFar;
 
-var folder = gui.addFolder('Grass');
-folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
-folder.add(grass_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
-folder.add(grass_uniforms.max_strength, 'value', 1, 200, 0.001).name('Max Strength');
-folder.add(grass_uniforms.interval, 'value', 0, 10, 0.001).name('Interval');
-folder.add(grass_uniforms.detail, 'value', 0, 100, 0.001).name('Detail');
-folder.add(grass_uniforms.distortion, 'value', 0, 1, 0.001).name('Distortion');
-folder.add(grass_uniforms.height_offset, 'value', 0, 10, 0.001).name('Height offset');
-folder.open();
+//var folder = gui.addFolder('Grass');
+//folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
+//folder.add(grass_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
+//folder.add(grass_uniforms.max_strength, 'value', 1, 200, 0.001).name('Max Strength');
+//folder.add(grass_uniforms.interval, 'value', 0, 10, 0.001).name('Interval');
+//folder.add(grass_uniforms.detail, 'value', 0, 100, 0.001).name('Detail');
+//folder.add(grass_uniforms.distortion, 'value', 0, 1, 0.001).name('Distortion');
+//folder.add(grass_uniforms.height_offset, 'value', 0, 10, 0.001).name('Height offset');
+//folder.open();
 
 // instantiate boat
 var boatMtlLoader = new THREE.MTLLoader();
@@ -242,6 +247,7 @@ var count = 0;
 function animate() {  
     requestAnimationFrame(animate)
     render()
+    stats.update();
 
     var boat2 = scene.getObjectByName( "boat2" );
     boat2.position.y = 95 + 10 * Math.sin(count/40);
@@ -265,7 +271,7 @@ function animate() {
 
 
     count += 1;
-    //console.log(dt);
+    console.log(dt);
 }
 
 function onWindowResize() {

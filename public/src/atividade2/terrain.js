@@ -37,7 +37,7 @@ function vertex_shader() {
                     (d - b) * u.x * u.y;
         }
 
-        #define NUM_OCTAVES 6
+        #define NUM_OCTAVES 5
         #define MAX_OCTAVES 20
 
         float fbm ( in vec2 st) {
@@ -60,7 +60,7 @@ function vertex_shader() {
             float result = signal;
             float weight = 1.0;
             int n = int(octaves);
-            for (int i = 0; i < MAX_OCTAVES; i++) {
+            for (int i = 0; i < NUM_OCTAVES; i++) {
                 point *= lacuarity;
                 weight = signal * gain;
                 clamp(weight, 0.0, 1.0);
@@ -68,7 +68,8 @@ function vertex_shader() {
                 signal = offset - signal;
                 signal *= signal;
                 signal *= weight;
-                result += float(i < n) * signal * pow(frequency, -H);
+                //result += float(i < n) * signal * pow(frequency, -H);
+                result += signal * pow(frequency, -H);
                 frequency *= lacuarity;
             }
 
