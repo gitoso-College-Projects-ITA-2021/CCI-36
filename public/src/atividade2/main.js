@@ -285,6 +285,12 @@ function animate() {
     controls.movementSpeed = perf_parms.mov_speed;
     controls.lookSpeed = perf_parms.rot_speed;
     controls.update( dt );
+    if (Math.abs(camera.position.x) > 15000) { 
+        camera.position.x = -Math.sign(camera.position.x) * 14000;
+    }
+    if (Math.abs(camera.position.z) > 15000) { 
+        camera.position.z = -Math.sign(camera.position.z) * 14000;
+    }
 
     dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
     dt = (Date.now() - last_time)/1000;
