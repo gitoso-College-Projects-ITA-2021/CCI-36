@@ -166,7 +166,6 @@ function grass_vertex_shader() {
 function grass_fragment_shader() {
     return `
         precision highp float;
-        #extension GL_OES_standard_derivatives : enable
         uniform float H;
         uniform float lacuarity;
         uniform float octaves;

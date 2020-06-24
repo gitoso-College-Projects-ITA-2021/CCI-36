@@ -208,7 +208,7 @@ THREE.Water = function ( geometry, options ) {
 
 	scope.material = material;
 
-	scope.onBeforeRender = function ( renderer, scene, camera ) {
+	scope.before_render = function ( renderer, scene, camera ) {
 
 		mirrorWorldPosition.setFromMatrixPosition( scope.matrixWorld );
 		cameraWorldPosition.setFromMatrixPosition( camera.matrixWorld );
