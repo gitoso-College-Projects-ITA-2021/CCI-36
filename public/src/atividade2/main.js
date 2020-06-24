@@ -96,8 +96,8 @@ var terrain_uniforms = terrain.material.uniforms;
 var sky_uniforms = sky.material.uniforms;
 var parameters = {
     distance: 400,
-    inclination: 0.3,
-    azimuth: 0.205
+    inclination: 0.45,
+    azimuth: 0.14
 };
 
 function updateSun() {
@@ -107,13 +107,11 @@ function updateSun() {
 }
 
 // Initial values (Sky)
-parameters.inclination = 0.52
-parameters.azimuth = 0.533
-sky_uniforms.rayleigh.value = 9.75
-sky_uniforms.turbidity.value = 3.6
-sky_uniforms.luminance.value = 0.90
-sky_uniforms.mie_coeff.value = 0.004
-sky_uniforms.mie_directionalg.value = 0.07
+sky_uniforms.rayleigh.value = 1;
+sky_uniforms.turbidity.value = 2;
+sky_uniforms.luminance.value = 1;
+sky_uniforms.mie_coeff.value = 0.00005;
+sky_uniforms.mie_directionalg.value = 0.8;
 
 // Initial values (Terrain)
 terrain_uniforms.H.value = 0.732
@@ -293,8 +291,6 @@ function animate() {
     last_time = Date.now();
     total = dt/2.0;
     //grass_uniforms.time.value = total;
-    console.log(controls.view_update);
-
 
     count += 1;
 }
