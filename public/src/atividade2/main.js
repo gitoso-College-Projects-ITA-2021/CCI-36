@@ -249,12 +249,16 @@ var perf_parms = {
     enable_reflection: false,
     delayed_reflection: false,
     reflection_function: update_water,
+    mov_speed: 500,
+    rot_speed: 0.1,
 };
 
-var folder = gui.addFolder('Perfomance parameters');
+var folder = gui.addFolder('Perfomance/General parameters');
 gui.add(perf_parms, 'enable_reflection').name('Enable reflection');
 gui.add(perf_parms, 'delayed_reflection').name('Delayed reflection');
-gui.add(perf_parms, 'reflection_function').name('Calculate reflection');
+gui.add(perf_parms, 'reflection_function').name('CalculateReflection');
+gui.add(perf_parms, 'mov_speed', 0, 10000, 0.001).name('Movement Speed');
+gui.add(perf_parms, 'rot_speed', 0, 0.5, 0.0001).name('Rotation Speed');
 folder.open();
 
 var last_time = 0.0;
@@ -280,8 +284,8 @@ function animate() {
       boat1.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/25) / 75)
     }
 
-    controls.movementSpeed = 500;
-    controls.lookSpeed = 0.1;
+    controls.movementSpeed = perf_parms.mov_speed;
+    controls.lookSpeed = perf_parms.rot_speed;
     controls.update( dt );
 
     dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
