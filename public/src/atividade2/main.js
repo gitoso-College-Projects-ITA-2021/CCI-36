@@ -250,14 +250,18 @@ function animate() {
     render()
 
     var boat2 = scene.getObjectByName( "boat2" );
-    boat2.position.y = 95 + 10 * Math.sin(count/40);
-    boat2.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/30) / 80)
-    boat2.rotateX(THREE.Math.degToRad(-90));
+    if(boat2) {
+      boat2.position.y = 95 + 10 * Math.sin(count/40);
+      boat2.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/30) / 80)
+      boat2.rotateX(THREE.Math.degToRad(-90));
+    }
 
 
     var boat1 = scene.getObjectByName( "boat1" );
-    boat1.position.y = 185 + 7 * Math.sin(count/30);
-    boat1.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/25) / 75)
+    if(boat1) {
+      boat1.position.y = 185 + 7 * Math.sin(count/30);
+      boat1.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/25) / 75)
+    }
 
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
