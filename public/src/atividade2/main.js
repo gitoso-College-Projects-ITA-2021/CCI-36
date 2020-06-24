@@ -245,7 +245,7 @@ function update_water() {
 
 var perf_parms = {
     enable_reflection: true,
-    delayed_reflection: true,
+    delayed_reflection: false,
     reflection_function: update_water,
     mov_speed: 500,
     rot_speed: 0.1,
@@ -263,6 +263,7 @@ var last_time = 0.0;
 var total = 0.0;
 var dt = 0;
 var count = 0;
+water.before_render(renderer, scene, camera);
 function animate() {  
     requestAnimationFrame(animate)
     render()
