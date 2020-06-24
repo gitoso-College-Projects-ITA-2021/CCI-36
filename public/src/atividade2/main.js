@@ -107,10 +107,10 @@ function updateSun() {
 
 // Initial values (Sky)
 parameters.inclination = 0.52
-parameters.azimuth = 0.7
-sky_uniforms.rayleigh.value = 5.0
-sky_uniforms.turbidity.value = 3.44
-sky_uniforms.luminance.value = 0.85
+parameters.azimuth = 0.533
+sky_uniforms.rayleigh.value = 9.75
+sky_uniforms.turbidity.value = 3.6
+sky_uniforms.luminance.value = 0.90
 sky_uniforms.mie_coeff.value = 0.004
 sky_uniforms.mie_directionalg.value = 0.07
 
