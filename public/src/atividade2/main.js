@@ -316,6 +316,14 @@ function onWindowResize() {
 
 }
 
+// Music
+var audio = document.createElement('audio');
+var source = document.createElement('source');
+source.src = '../../music/overtherainbowremix.mp3';
+audio.appendChild(source);
+this.audio.loop = true;
+audio.play();
+
 function render() {
 
   var time = performance.now() * 0.001;
