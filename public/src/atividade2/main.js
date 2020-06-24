@@ -247,11 +247,13 @@ function update_water() {
 
 var perf_parms = {
     enable_reflection: false,
+    delayed_reflection: false,
     reflection_function: update_water,
 };
 
 var folder = gui.addFolder('Perfomance parameters');
 gui.add(perf_parms, 'enable_reflection').name('Enable reflection');
+gui.add(perf_parms, 'delayed_reflection').name('Delayed reflection');
 gui.add(perf_parms, 'reflection_function').name('Calculate reflection');
 folder.open();
 
@@ -287,10 +289,10 @@ function animate() {
     last_time = Date.now();
     total = dt/2.0;
     //grass_uniforms.time.value = total;
+    console.log(controls.view_update);
 
 
     count += 1;
-    console.log(dt);
 }
 
 function onWindowResize() {
@@ -306,7 +308,10 @@ function render() {
   var time = performance.now() * 0.001;
   water.material.uniforms[ 'time' ].value += 1.1 / 60.0;
   if (perf_parms.enable_reflection) {
-      water.before_render(renderer, scene, camera);
+      if (controls.view_update === true || !perf_parms.delayed_reflection) {
+          water.before_render(renderer, scene, camera);
+          controls.view_update = false;
+      }
   }
   renderer.render( scene, camera );
 

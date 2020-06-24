@@ -24,6 +24,7 @@ THREE.FlyControls = function ( object, domElement ) {
 
 	this.dragToLook = false;
 	this.autoForward = false;
+    this.view_update = true;
 
 	// disable default target object behavior
 
@@ -207,6 +208,7 @@ THREE.FlyControls = function ( object, domElement ) {
 		this.moveVector.x = ( - this.moveState.left + this.moveState.right );
 		this.moveVector.y = ( - this.moveState.down + this.moveState.up );
 		this.moveVector.z = ( - forward + this.moveState.back );
+        this.view_update = true;
 
 		//console.log( 'move:', [ this.moveVector.x, this.moveVector.y, this.moveVector.z ] );
 
@@ -217,6 +219,7 @@ THREE.FlyControls = function ( object, domElement ) {
 		this.rotationVector.x = ( - this.moveState.pitchDown + this.moveState.pitchUp );
 		this.rotationVector.y = ( - this.moveState.yawRight + this.moveState.yawLeft );
 		this.rotationVector.z = ( - this.moveState.rollRight + this.moveState.rollLeft );
+        this.view_update = true;
 
 		//console.log( 'rotate:', [ this.rotationVector.x, this.rotationVector.y, this.rotationVector.z ] );
 
