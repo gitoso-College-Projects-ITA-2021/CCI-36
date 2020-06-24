@@ -73,7 +73,7 @@ terrain.material.uniforms.sand_texture.value = sand_texture;
 terrain.material.uniforms.env_map.value = scene.background;
 
 var grass = generate_grass();
-//scene.add(grass);
+scene.add(grass);
 scene.add(terrain);
 
 var grass_texture = loader.load('assets/arvore2.png');
@@ -164,6 +164,8 @@ grass_uniforms.yoffset = terrain_uniforms.yoffset;
 grass_uniforms.fogNear = terrain_uniforms.fogNear;
 grass_uniforms.fogFar = terrain_uniforms.fogFar;
 
+
+
 //var folder = gui.addFolder('Grass');
 //folder.add(grass_uniforms.speed, 'value', 0, 100, 0.001).name('Speed');
 //folder.add(grass_uniforms.min_strength, 'value', 0, 20, 0.001).name('Min Strength');
@@ -239,6 +241,19 @@ water.rotation.x = - Math.PI / 2;
 water.position.set(0, 210, 0)
 scene.add( water );
 
+function update_water() {
+    water.before_render(renderer, scene, camera);
+}
+
+var perf_parms = {
+    enable_reflection: false,
+    reflection_function: update_water,
+};
+
+var folder = gui.addFolder('Perfomance parameters');
+gui.add(perf_parms, 'enable_reflection').name('Enable reflection');
+gui.add(perf_parms, 'reflection_function').name('Calculate reflection');
+folder.open();
 
 var last_time = 0.0;
 var total = 0.0;
@@ -286,7 +301,9 @@ function render() {
 
   var time = performance.now() * 0.001;
   water.material.uniforms[ 'time' ].value += 1.1 / 60.0;
-  updateSun();
+  if (perf_parms.enable_reflection) {
+      water.before_render(renderer, scene, camera);
+  }
   renderer.render( scene, camera );
 
 }
