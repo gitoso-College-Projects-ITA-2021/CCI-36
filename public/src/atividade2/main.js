@@ -83,7 +83,7 @@ grass_texture.repeat.set( 4, 4 );
 grass.material.uniforms.grass_texture.value = grass_texture;
 grass.material.uniforms.env_map.value = scene.background;
 
-camera.position.set(3000.0,  400.0, 700.0);
+camera.position.set(8000.0,  2000.0, -6000.0);
 camera.lookAt(0.0, 0.0, 0.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
 controls.domElement = renderer.domElement;
@@ -170,8 +170,6 @@ boatMtlLoader.load('boat.mtl', function(materials){
 });
 
 // instantiate boat
-var boat;
-
 var boatMtlLoader = new THREE.MTLLoader();
 boatMtlLoader.setPath('assets/boat2/');
 boatMtlLoader.load('boat2.mtl', function(materials){
