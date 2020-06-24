@@ -1,4 +1,4 @@
-function grass_vertex_shader() {
+function tree_vertex_shader() {
     return `
         precision highp float;
         uniform mat4 modelViewMatrix;
@@ -119,14 +119,14 @@ function grass_vertex_shader() {
             float y = rigged_multifractal(newpos.xz/10000.0); 
             y *= scale;
             height = y;
-            newpos.y = height + 25.0;
             newpos -=  vec3(xoffset, 0.0, yoffset);
 
 
             //vec4 mvPosition = modelViewMatrix * vec4( newpos, 1.0 );
-            float sc =  10.0 * noise(newpos.xz);
-            sc = 10.0;
-            sc = sc * 5.0 + 5.0;
+            float sc =  40.0 * noise(newpos.xz);
+            //sc = 10.0;
+            sc = sc * 10.0 + 10.0;
+            newpos.y = height + sc * 0.5;
             //mvPosition.xyz += position * sc;
             v_scale = 1.0;
             v_uv = uv;
@@ -163,7 +163,7 @@ function grass_vertex_shader() {
         } 
     `
 }
-function grass_fragment_shader() {
+function tree_fragment_shader() {
     return `
         precision highp float;
         uniform float H;
@@ -175,7 +175,7 @@ function grass_fragment_shader() {
         uniform vec3 sun_position;
 
 
-        uniform sampler2D grass_texture;
+        uniform sampler2D tree_texture;
         uniform samplerCube env_map;
 
         uniform vec3 fogColor;
@@ -194,8 +194,8 @@ function grass_fragment_shader() {
         void main() {
 
 
-            vec4 grass_tex = texture2D(grass_texture, v_uv);
-            if (grass_tex.w < 0.5 || height < 250.0 || height > 700.0) discard;
+            vec4 tree_tex = texture2D(tree_texture, v_uv);
+            if (tree_tex.w < 0.5 || height < 250.0 || height > 700.0) discard;
 
             vec4 light_color = vec4(1.0, 1.0, 1.0, 1.0);
             vec4 ambient = vec4(0.1 * vec3(1.0, 1.0, 1.0), 1.0);
@@ -206,18 +206,18 @@ function grass_fragment_shader() {
             vec4 diffuse = diff * light_color;
             vec3 env_color = vec3(textureCube(env_map, world_pos));
 
-            vec3 col = grass_tex.xyz;
+            vec3 col = tree_tex.xyz;
             float depth = gl_FragCoord.z / gl_FragCoord.w;
             float fogFactor = smoothstep( fogNear, fogFar, depth );
 
             gl_FragColor = mix((ambient + diffuse) * vec4(col , 1.0), vec4(env_color, 1.0), 0.1 );
             gl_FragColor.rgb = mix( gl_FragColor.rgb, env_color, fogFactor );
-            gl_FragColor.a = grass_tex.a;
+            gl_FragColor.a = tree_tex.a;
         }
     `
 }
 
-function generate_grass() {
+function generate_tree() {
     var uniforms = {
         H : {type: 'float', value: 0.75}, 
         lacuarity: {type: 'float', value: 3.6},
@@ -227,7 +227,7 @@ function generate_grass() {
         scale: {type: 'float', value: 200},
         xoffset: {type: 'float', value: 0.0},
         yoffset: {type: 'float', value: 0.0},
-        grass_texture: {type: 'sampler2D', value: null},
+        tree_texture: {type: 'sampler2D', value: null},
         env_map: {type: 'samplerCube', value: null},
         fogColor:    { type: "c", value: new THREE.Vector3(0.45, 0.5, 0.67) },
         fogNear:     { type: "f", value: 5000 },
@@ -246,8 +246,8 @@ function generate_grass() {
 
     var material = new THREE.RawShaderMaterial({
         uniforms: uniforms,
-        fragmentShader: grass_fragment_shader(),
-        vertexShader: grass_vertex_shader(),
+        fragmentShader: tree_fragment_shader(),
+        vertexShader: tree_vertex_shader(),
         //depthTest: true,
         //side: THREE.DoubleSide,
         //depthWrite: true
@@ -261,7 +261,7 @@ function generate_grass() {
     geometry.index = circleGeometry.index;
     geometry.attributes = circleGeometry.attributes;
 
-    var dim = 300;
+    var dim = 64;
     var particleCount = dim * dim;
 
     var translateArray = new Float32Array( particleCount * 3 );
@@ -279,10 +279,10 @@ function generate_grass() {
 
     geometry.setAttribute( 'translate', new THREE.InstancedBufferAttribute( translateArray, 3 ) );
 
-    var grass = new THREE.Mesh( geometry, material );
-    grass.frustumCulled = false;
-    grass.scale.set( 1, 1, 1 );
+    var tree = new THREE.Mesh( geometry, material );
+    tree.frustumCulled = false;
+    tree.scale.set( 1, 1, 1 );
 
 
-    return grass;
+    return tree;
 }
