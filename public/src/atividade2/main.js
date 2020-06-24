@@ -97,7 +97,7 @@ var sky_uniforms = sky.material.uniforms;
 var parameters = {
     distance: 400,
     inclination: 0.489,
-    azimuth: 0.14
+    azimuth: 0.1257
 };
 
 function updateSun() {
@@ -117,8 +117,8 @@ sky_uniforms.mie_directionalg.value = 0.8;
 terrain_uniforms.H.value = 0.732
 terrain_uniforms.lacuarity.value = 5.381
 //terrain_uniforms.octaves.value = 20
-terrain_uniforms.offset.value = 1
-terrain_uniforms.gain.value = 1.6
+terrain_uniforms.offset.value = 0.979
+terrain_uniforms.gain.value = 1.87
 terrain_uniforms.scale.value = 204
 terrain_uniforms.xoffset.value = 0
 terrain_uniforms.yoffset.value = 926
