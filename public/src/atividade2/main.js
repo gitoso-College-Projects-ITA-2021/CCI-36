@@ -83,8 +83,8 @@ grass_texture.repeat.set( 4, 4 );
 grass.material.uniforms.grass_texture.value = grass_texture;
 grass.material.uniforms.env_map.value = scene.background;
 
-camera.position.set(8000.0,  2000.0, -6000.0);
-camera.lookAt(0.0, 0.0, 0.0);
+camera.position.set(7500.0,  1200.0, 6000.0);
+camera.lookAt(3000.0, 200.0, 1000.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
 controls.domElement = renderer.domElement;
 controls.rollSpeed = Math.PI / 24;
@@ -104,6 +104,27 @@ function updateSun() {
     terrain.material.uniforms['sun_position'].value.copy(sun_light.position).normalize();
     cubeCamera.update(renderer, sky);
 }
+
+// Initial values (Sky)
+parameters.inclination = 0.52
+parameters.azimuth = 0.533
+sky_uniforms.rayleigh.value = 9.75
+sky_uniforms.turbidity.value = 3.6
+sky_uniforms.luminance.value = 0.90
+sky_uniforms.mie_coeff.value = 0.004
+sky_uniforms.mie_directionalg.value = 0.07
+
+// Initial values (Terrain)
+terrain_uniforms.H.value = 0.732
+terrain_uniforms.lacuarity.value = 5.381
+terrain_uniforms.octaves.value = 20
+terrain_uniforms.offset.value = 1
+terrain_uniforms.gain.value = 1.6
+terrain_uniforms.scale.value = 204
+terrain_uniforms.xoffset.value = 0
+terrain_uniforms.yoffset.value = 926
+
+
 updateSun();
 
 var gui = new dat.GUI();
@@ -162,6 +183,7 @@ boatMtlLoader.load('boat.mtl', function(materials){
   boatloader.setMaterials(materials);
   boatloader.setPath('assets/boat/');
   boatloader.load('boat.obj',function ( object ) {
+    object.name = "boat1";
     object.position.y = 200;
     object.position.x = 3000;
     object.position.z = 1000;
@@ -229,6 +251,11 @@ function animate() {
     boat2.position.y = 95 + 10 * Math.sin(count/40);
     boat2.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/30) / 80)
     boat2.rotateX(THREE.Math.degToRad(-90));
+
+
+    var boat1 = scene.getObjectByName( "boat1" );
+    boat1.position.y = 185 + 7 * Math.sin(count/30);
+    boat1.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).normalize(), Math.sin(count/25) / 75)
 
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
