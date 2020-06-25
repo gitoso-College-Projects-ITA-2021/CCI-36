@@ -38,11 +38,15 @@ function tree_vertex_shader() {
         varying vec3 reflectdir;
         varying float v_scale;
 
-
-
-        float random (in vec2 p) {
-            return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+        float random(vec2 p) {
+            vec3 p3  = fract(vec3(p.xyx) * .1031);
+            p3 += dot(p3, p3.yzx + 33.33);
+            return fract((p3.x + p3.y) * p3.z);
         }
+
+        //float random (in vec2 p) {
+            //return fract(sin(dot(p.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+        //}
 
         // https://www.shadertoy.com/view/4dS3Wd
         float noise (in vec2 _st) {
