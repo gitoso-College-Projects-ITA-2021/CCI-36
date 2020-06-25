@@ -118,14 +118,14 @@ function playScene() {
   sky_uniforms.mie_directionalg.value = 0.8;
 
   // Initial values (Terrain)
-  terrain_uniforms.H.value = 0.732
-  terrain_uniforms.lacuarity.value = 5.381
+  terrain_uniforms.H.value = 0.434
+  terrain_uniforms.lacuarity.value = 8.248
   //terrain_uniforms.octaves.value = 20
-  terrain_uniforms.offset.value = 0.979
+  terrain_uniforms.offset.value = 0.869
   terrain_uniforms.gain.value = 1.87
-  terrain_uniforms.scale.value = 204
-  terrain_uniforms.xoffset.value = 0
-  terrain_uniforms.yoffset.value = 926
+  terrain_uniforms.scale.value = 369
+  terrain_uniforms.xoffset.value = 1587.9
+  terrain_uniforms.yoffset.value = 264.66
 
 
   updateSun();
