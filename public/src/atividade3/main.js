@@ -7,10 +7,6 @@ var renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio( window.devicePixelRatio );
 
-// Input
-const inputManager = new InputManager();
-
-
 var scene = new THREE.Scene()
 
 var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 15000);
@@ -265,10 +261,19 @@ function bounded_pos(x, y, z) {
     return { x: px, y: py, z: pz };
 }
 
-function animate() {  
+// Input handling
+let key_pressed = false;
+let key_code = 0;
+let keymap = {Y: 89, U: 85};
+
+window.addEventListener('keypress', (e) => {
+    key_pressed = true;
+    key_code = e.keyCode;
+});
+
+function animate() {
     requestAnimationFrame(animate)
     raycaster.setFromCamera( mouse, camera );
-    inputManager.update()
     render()
 
     for (var x = 0; x < gx * step; x += step) {
@@ -338,18 +343,27 @@ function animate() {
     last_time = Date.now();
     total = dt / 2.0;
 
+    // Update
+    if (count % 5 == 0) {
+        px_old = p_pos.x;
+        py_old = p_pos.y;
+        pz_old = p_pos.z;
+        rot_old = rot;
+        if (key_pressed && key_code == 121) {
+            rot += 90;
+        }
+        key_pressed = false;
+        key_code = 0;
+        count_rot = 1;
+    }
 
-    if (count > 50) {
+
+    if (count > 100) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
         p_pos.y -= 1;
         count = 1;
-        rot_old = rot;
-        if (inputManager.keys.y.down) {
-            rot += 90;
-        }
-        count_rot = 1;
     }
     pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
     p_pos.x = pos.x;

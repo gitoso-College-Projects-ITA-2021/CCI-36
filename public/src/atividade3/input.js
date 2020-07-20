@@ -40,6 +40,9 @@ class InputManager {
       window.addEventListener('keyup', (e) => {
         setKeyFromKeyCode(e.keyCode, false);
       });
+      window.addEventListener('keypress', (e) => {
+        setKeyFromKeyCode(e.keyCode, true);
+      });
     }
     update() {
       for (const keyState of Object.values(this.keys)) {
