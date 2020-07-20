@@ -27,7 +27,7 @@ function objects(n, p_size){
             p_cubes[p_idx(0, 0, 0)] = true;
             p_cubes[p_idx(1, 0, 0)] = true;
             p_cubes[p_idx(2, 0, 0)] = true;
-            p_cubes[p_idx(3, 0, 0)] = true;
+            //p_cubes[p_idx(3, 0, 0)] = true;
             break;
 
         // Bomerang 2x2

@@ -24,9 +24,9 @@ var gridHelper = new THREE.GridHelper(size, divisions);
 //scene.add(gridHelper);
 
 // Grid setup
-var gx = 3;
+var gx = 5;
 var gy = 15;
-var gz = 3;
+var gz = 5;
 var step = 20;
 var grid_size = gx * gy * gz;
 
@@ -147,7 +147,7 @@ function p_idx(x, y, z) {
     return Math.floor(x + y * px + z * px * py);
 }
 
-var p_pos = new THREE.Vector3(0, 11, 0);
+var p_pos = new THREE.Vector3(Math.floor(gx/2), 11, Math.floor(gz/2));
 for (var x = 0; x < px; x++) {
     for (var y = 0; y < py; y++) {
         for (var z = 0; z < pz; z++) {
@@ -437,7 +437,7 @@ function animate() {
                     p = int_rotationZ(p.x, p.y, p.z, rotZ);
                     p = int_rotationX(p.x, p.y, p.z, rotX);
                     let bound = bounded_pos((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
-                    console.log(bound);
+                    //console.log(bound);
                     if (bound == true) {
                         px_maybe = px_old;
                         //py_maybe = py_old;
@@ -479,7 +479,7 @@ function animate() {
     }
 
 
-    if (count > 20) {
+    if (count > 10) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -505,7 +505,7 @@ function animate() {
                     p = int_rotationZ(p.x, p.y, p.z, rotZ);
                     p = int_rotationX(p.x, p.y, p.z, rotX);
                     let bound = bounded_pos((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
-                    console.log(bound);
+                    //console.log(bound);
                     if (bound == true) {
                         px_maybe = px_old;
                         py_maybe = py_old;
@@ -557,6 +557,10 @@ function animate() {
             }
         }
         p_pos.y = 11;
+        p_pos.x = Math.floor(gx/2);
+        p_pos.z = Math.floor(gz/2);
+        let piece = Math.floor((Math.random()*7));
+        p_cubes = objects(piece, p_size);
 
         for (var y = 0; y < gy * 1; y += 1) {
             let slice_full = true;
