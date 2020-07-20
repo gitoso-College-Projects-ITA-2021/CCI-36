@@ -24,17 +24,17 @@ var gridHelper = new THREE.GridHelper(size, divisions);
 //scene.add(gridHelper);
 
 // Grid setup
-var gx = 10;
+var gx = 12;
 var gy = 15;
-var gz = 10;
+var gz = 12;
 var step = 20;
 var grid_size = gx * gy * gz;
 
 
 function grid_idx(x, y, z) {
-    let xx = Math.round(x);
-    let yy = Math.round(y);
-    let zz = Math.round(z);
+    let xx = Math.floor(x);
+    let yy = Math.floor(y);
+    let zz = Math.floor(z);
     let idx =  (xx + yy * gx + zz * gx * gy);
     return idx;
 }
@@ -47,7 +47,7 @@ for (var x = 0; x < gx  ; x += 1) {
     for (var y = 0; y < gy  ; y += 1) {
         for (var z = 0; z < gz  ; z += 1) {
             var idx = grid_idx(x, y , z);
-            console.log(idx);
+            //console.log(idx);
             var geom = new THREE.BoxGeometry(step - 0.0, step - 0.0, step - 0.0);
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
@@ -79,9 +79,9 @@ var py = 3;
 var pz = 3;
 
 // https://discourse.threejs.org/t/3d-grid-of-lines/3850
-let xSize = gx;
-let ySize = gy;
-let zSize = gz;
+let xSize = gx+1;
+let ySize = gy+1;
+let zSize = gz+1;
 let n = xSize * ySize * zSize;
 
 let geometry = new THREE.BufferGeometry();
@@ -106,12 +106,12 @@ let positions = [];
 //positions.push(p.y);
 //positions.push(p.z);
 //}
-for (var x = 0; x < gx * step; x += step) {
-    for (var y = 0; y < gy * step; y += step) {
-        for (var z = 0; z < gz * step; z += step) {
-            positions.push(x - step / 2);
-            positions.push(y - step / 2);
-            positions.push(- z + step / 2);
+for (var x = 0; x < gx+1; x++) {
+    for (var y = 0; y < gy+1; y++) {
+        for (var z = 0; z < gz+1; z++) {
+            positions.push(x*step - step / 2);
+            positions.push(y*step - step / 2);
+            positions.push(- z*step + step / 2);
         }
     }
 }
@@ -266,28 +266,31 @@ function onMouseUp(event) {
 
 // esse bound check nao tah completo
 function bounded_pos(x, y, z) {
-    var ppx = x;
-    var ppy = y;
-    var ppz = z;
-    if (x > gx - 3) {
-        ppx = gx - 3;
+    let bx = false;
+    let by = false;
+    let bz = false;
+    //let g_idx = grid_idx(x, y, z);
+    if (x > gx) {
+        return true;
     }
     if (x < 0) {
-        ppx = 0;
+        return true;
     }
-    if (y > gy - 3) {
-        ppy = gy - 3;
+    if (y > gy) {
+        return true;
     }
     if (y < 0) {
-        ppy = 0;
+        return true;
     }
-    if (z > gz - 3) {
-        ppz = gz - 3;
+    if (z > gz) {
+        return true;
     }
     if (z < 0) {
-        ppz = 0;
+        return true;
     }
-    return { x: ppx, y: ppy, z: ppz };
+
+    //return !(0 <= g_idx && g_idx < grid_size);
+
 }
 
 // Input handling
@@ -337,9 +340,7 @@ function animate() {
                     let p = int_rotationY(x, y, z, rotY);
                     p = int_rotationZ(p.x, p.y, p.z, rotZ);
                     p = int_rotationX(p.x, p.y, p.z, rotX);
-                    console.log(p_pos);
-                    console.log(delta);
-                    g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                    let g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
                     grid_cubes[g_idx].visible = true;
                     if (move_object == false)
                         grid_cubes[g_idx].material.color.set(0x00ff00);
@@ -400,6 +401,10 @@ function animate() {
     delta.x = mouse_2.x - mouse_old.x;
     delta.y = mouse_2.y - mouse_old.y;
 
+    px_old = p_pos.x;
+    py_old = p_pos.y;
+    pz_old = p_pos.z;
+
     if (is_dragging == true) {
         var mulx = 0.1;
         var muly = 0.1;
@@ -407,7 +412,7 @@ function animate() {
         p_pos.x += delta.x * mulx;
         p_pos.z += delta.y * muly;
     }
-    console.log(move_object);
+    //console.log(move_object);
 
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
@@ -417,6 +422,40 @@ function animate() {
     last_time = Date.now();
     total = dt / 2.0;
 
+    let px_maybe = p_pos.x;
+    let py_maybe = p_pos.y;
+    let pz_maybe = p_pos.z;
+    let rot_maybex = rotX;
+    let rot_maybey = rotY;
+    let rot_maybez = rotZ;
+
+    for (var x = 0; x < px; x++) {
+        for (var y = 0; y < py; y++) {
+            for (var z = 0; z < pz; z++) {
+                if (p_cubes[p_idx(x, y, z)] == true) {
+                    let p = int_rotationY(x, y, z, rotY);
+                    p = int_rotationZ(p.x, p.y, p.z, rotZ);
+                    p = int_rotationX(p.x, p.y, p.z, rotX);
+                    let bound = bounded_pos((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                    console.log(bound);
+                    if (bound == true) {
+                        px_maybe = px_old;
+                        //py_maybe = py_old;
+                        pz_maybe = pz_old;
+                        rot_maybex = rot_oldX;
+                        rot_maybey = rot_oldY;
+                        rot_maybez = rot_oldZ;
+                    }
+                }
+            }
+        }
+    }
+    p_pos.x = px_maybe;
+    p_pos.y = py_maybe;
+    p_pos.z = pz_maybe;
+    //rotX = rot_maybex;
+    //rotY = rot_maybey;
+    //rotZ = rot_maybez;
     // Update
     if (count % 5 == 0) {
         px_old = p_pos.x;
@@ -440,19 +479,55 @@ function animate() {
     }
 
 
-    if (count > 10) {
+    if (count > 50) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
         p_pos.y -= 1;
         count = 1;
     }
-    pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
-    p_pos.x = pos.x;
-    p_pos.y = pos.y;
-    p_pos.z = pos.z;
-    if (p_pos.y <= 0) {
-        p_pos.y = 0;
+    //pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
+    //p_pos.x = pos.x;
+    //p_pos.y = pos.y;
+    //p_pos.z = pos.z;
+    px_maybe = p_pos.x;
+    py_maybe = p_pos.y;
+    pz_maybe = p_pos.z;
+    rot_maybex = rotX;
+    rot_maybey = rotY;
+    rot_maybez = rotZ;
+    var stop = false;
+    for (var x = 0; x < px; x++) {
+        for (var y = 0; y < py; y++) {
+            for (var z = 0; z < pz; z++) {
+                if (p_cubes[p_idx(x, y, z)] == true) {
+                    let p = int_rotationY(x, y, z, rotY);
+                    p = int_rotationZ(p.x, p.y, p.z, rotZ);
+                    p = int_rotationX(p.x, p.y, p.z, rotX);
+                    let bound = bounded_pos((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                    console.log(bound);
+                    if (bound == true) {
+                        px_maybe = px_old;
+                        py_maybe = py_old;
+                        pz_maybe = pz_old;
+                        rot_maybex = rot_oldX;
+                        rot_maybey = rot_oldY;
+                        rot_maybez = rot_oldZ;
+                    }
+                    if (p_pos.y + p.y <= 0)
+                        stop = true;
+                }
+            }
+        }
+    }
+    p_pos.x = px_maybe;
+    p_pos.y = py_maybe;
+    p_pos.z = pz_maybe;
+    //rotX = rot_maybex;
+    //rotY = rot_maybey;
+    //rotZ = rot_maybez;
+
+    if (stop == true) {
         for (var x = 0; x < px; x++) {
             for (var y = 0; y < py; y++) {
                 for (var z = 0; z < pz; z++) {
@@ -460,9 +535,9 @@ function animate() {
                         let p = int_rotationY(x, y, z, rotY);
                         p = int_rotationZ(p.x, p.y, p.z, rotZ);
                         p = int_rotationX(p.x, p.y, p.z, rotX);
-                        g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                        let g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
                         grid_stopped[g_idx] = true;
-                        grid_cubes[idx].visible = true;
+                        grid_cubes[g_idx].visible = true;
                     }
                 }
             }
