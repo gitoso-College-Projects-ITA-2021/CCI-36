@@ -14,11 +14,12 @@ function objects(n, p_size){
             p_cubes[p_idx(1, 0, 0)] = true;
             break;
 
+            // Tem que arruma o centros
         // Tree cubes in line
         case 3:
-            p_cubes[p_idx(0, 0, 0)] = true;
-            p_cubes[p_idx(1, 0, 0)] = true;
-            p_cubes[p_idx(2, 0, 0)] = true;
+            p_cubes[p_idx(0, 1, 1)] = true;
+            p_cubes[p_idx(1, 1, 1)] = true;
+            p_cubes[p_idx(2, 1, 1)] = true;
             break;
 
         // Four cubes in line

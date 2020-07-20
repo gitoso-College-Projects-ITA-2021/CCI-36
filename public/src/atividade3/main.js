@@ -43,7 +43,7 @@ for (var x = 0; x < gx * step; x += step) {
     for (var y = 0; y < gy * step; y += step) {
         for (var z = 0; z < gz * step; z += step) {
             var idx = grid_idx(x, y , z);
-            var geom = new THREE.BoxGeometry(step - 0.2, step - 0.2, step - 0.2);
+            var geom = new THREE.BoxGeometry(step - 0.1, step - 0.1, step - 0.1);
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
             grid_cubes[idx] = new THREE.Mesh(geom, mat);
@@ -64,8 +64,12 @@ grid_cube = new THREE.Mesh(geom, mat);
 grid_cube.position.x = (gx - 1)*step/2;
 grid_cube.position.y = (gy - 1)*step/2;
 grid_cube.position.z = -(gz - 1)*step/2;
-scene.add(grid_cube);
+//scene.add(grid_cube);
 
+// Melhor ser impar pra ter um centro inteiro
+var px = 3;
+var py = 3;
+var pz = 3;
 
 // https://discourse.threejs.org/t/3d-grid-of-lines/3850
 let xSize = gx;
@@ -97,9 +101,9 @@ let positions = [];
 for (var x = 0; x < gx * step; x += step) {
     for (var y = 0; y < gy * step; y += step) {
         for (var z = 0; z < gz * step; z += step) {
-            positions.push(x);
-            positions.push(y);
-            positions.push(-z);
+            positions.push(x - step/2);
+            positions.push(y - step/2);
+            positions.push(-z + step/2);
         }
     }
 }
@@ -127,9 +131,6 @@ let lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial( {opaci
 scene.add(lines);
 // ----
 
-var px = 4;
-var py = 4;
-var pz = 4;
 var p_size = px * py * pz;
 
 var p_cubes = objects(3, p_size);
@@ -138,7 +139,7 @@ function p_idx(x, y, z) {
     return Math.floor(x + y * px + z * px * py);
 }
 
-var p_pos = new THREE.Vector3(5, 15, 5);
+var p_pos = new THREE.Vector3(0, 11, 0);
 for (var x = 0; x < px; x++) {
     for (var y = 0; y < py; y++) {
         for (var z = 0; z < pz; z++) {
@@ -195,11 +196,12 @@ function cospi2(rot) {
     if (angle == 270) return 0;
 }
 
+// O 1 tah hard coded mas tem que ser o resultado da divisao inteira de px,py,pz por 2
 function int_rotationY(posx, posy, posz, rot) {
-    var px = cospi2(rot) * posx + sinpi2(rot) * posz;
-    var py = posy;
-    var pz = -sinpi2(rot) * posx + cospi2(rot) * posz;
-    return { x: px, y: py, z: pz };
+    var new_px = cospi2(rot) * (posx - 1) + sinpi2(rot) * (posz - 1);
+    var new_py = posy;
+    var new_pz = -sinpi2(rot) * (posx - 1) + cospi2(rot) * (posz - 1);
+    return { x: new_px + 1, y: new_py, z: new_pz + 1 };
 }
 
 var raycaster = new THREE.Raycaster();
@@ -331,20 +333,21 @@ function animate() {
     total = dt/2.0;
 
 
-    if (count > 200) {
+    if (count > 50) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
         p_pos.y -= 1;
         count = 1;
         rot_old = rot;
-        rot -= 90;
+        rot += 90;
         count_rot = 1;
     }
     pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
     p_pos.x = pos.x;
     p_pos.y = pos.y;
     p_pos.z = pos.z;
+    if (p_pos.y == 0) p_pos.y = 11;
 
     count += 1;
     count_rot += 1;
