@@ -183,8 +183,14 @@ px_old = p_pos.x;
 py_old = p_pos.y;
 pz_old = p_pos.z;
 
-var rot = 0;
-var rot_old = 0;
+var rotY = 0;
+var rot_oldY = 0;
+
+var rotX = 0;
+var rot_oldX = 0;
+
+var rotZ = 0;
+var rot_oldZ = 0;
 
 function sinpi2(rot) {
     var angle = rot % 360;
@@ -210,6 +216,20 @@ function int_rotationY(posx, posy, posz, rot) {
     var new_py = posy;
     var new_pz = -sinpi2(rot) * (posx - 1) + cospi2(rot) * (posz - 1);
     return { x: new_px + 1, y: new_py, z: new_pz + 1 };
+}
+
+function int_rotationX(posx, posy, posz, rot) {
+    var new_px = posx;
+    var new_py = cospi2(rot) * (posy - 1) - sinpi2(rot) * (posz - 1);
+    var new_pz = sinpi2(rot) * (posy - 1) - cospi2(rot) * (posz - 1);
+    return { x: new_px, y: new_py + 1, z: new_pz + 1 };
+}
+
+function int_rotationZ(posx, posy, posz, rot) {
+    var new_px = cospi2(rot) * (posx - 1) - sinpi2(rot) * (posy - 1);
+    var new_py = sinpi2(rot) * (posx - 1) + cospi2(rot) * (posy - 1);
+    var new_pz = posz;
+    return { x: new_px + 1, y: new_py + 1, z: new_pz };
 }
 
 var raycaster = new THREE.Raycaster();
@@ -276,7 +296,7 @@ let key_code = 0;
 
 window.addEventListener('keypress', (e) => {
     key_pressed = true;
-    key_code = e.keyCode;
+    key_code = e.code;
 });
 
 var geom_plane = new THREE.PlaneGeometry( 100* gx * step, 100*  gz * step, 32 );
@@ -314,8 +334,9 @@ function animate() {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    let p = int_rotationY(x, y, z, rot);
-                    //let p = new THREE.Vector3(x, y, z);
+                    let p = int_rotationY(x, y, z, rotY);
+                    p = int_rotationZ(p.x, p.y, p.z, rotZ);
+                    p = int_rotationX(p.x, p.y, p.z, rotX);
                     console.log(p_pos);
                     console.log(delta);
                     g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
@@ -401,9 +422,17 @@ function animate() {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
-        rot_old = rot;
-        if (key_pressed && key_code == 121) {
-            rot += 90;
+        rot_oldY = rotY;
+        rot_oldZ = rotZ;
+        rot_oldX = rotX;
+        if (key_pressed && key_code == "KeyY") {
+            rotY += 90;
+        }
+        if (key_pressed && key_code == "KeyU") {
+            rotZ += 90;
+        }
+        if (key_pressed && key_code == "KeyI") {
+            rotX += 90;
         }
         key_pressed = false;
         key_code = 0;
@@ -429,6 +458,8 @@ function animate() {
                 for (var z = 0; z < pz; z++) {
                     if (p_cubes[p_idx(x, y, z)] == true) {
                         let p = int_rotationY(x, y, z, rot);
+                        p = int_rotationZ(p.x, p.y, p.z, rotZ);
+                        p = int_rotationX(p.x, p.y, p.z, rotX);
                         g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
                         grid_stopped[g_idx] = true;
                         grid_cubes[idx].visible = true;
