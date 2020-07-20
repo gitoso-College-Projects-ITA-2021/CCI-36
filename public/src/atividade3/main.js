@@ -479,7 +479,7 @@ function animate() {
     }
 
 
-    if (count > 50) {
+    if (count > 10) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -559,34 +559,34 @@ function animate() {
         p_pos.y = 11;
 
         for (var y = 0; y < gy * 1; y += 1) {
+            let slice_full = true;
             for (var x = 0; x < gx * 1; x += 1) {
-                let slice_full = true;
                 for (var z = 0; z < gz * 1; z += 1) {
                     var idx = grid_idx(x, y, z);
                     if (grid_stopped[idx] == false) {
                         slice_full = false;
                     }
                 }
-                if (slice_full == true) {
+            }
+            if (slice_full == true) {
+                for (var x = 0; x < gx * 1; x += 1) {
+                    for (var z = 0; z < gz * 1; z += 1) {
+                        var idx = grid_idx(x, y, z);
+                        grid_stopped[idx] = false;
+                        grid_cubes[idx].visible = false;
+                    }
+                }
+                for (var yy = y + 1; yy < gy * 1; yy += 1) {
                     for (var x = 0; x < gx * 1; x += 1) {
                         for (var z = 0; z < gz * 1; z += 1) {
                             var idx = grid_idx(x, y, z);
-                            grid_stopped[idx] = false;
-                            grid_cubes[idx].visible = false;
-                        }
-                    }
-                    for (var yy = y + 1; yy < gy * 1; yy += 1) {
-                        for (var x = 0; x < gx * 1; x += 1) {
-                            for (var z = 0; z < gz * 1; z += 1) {
-                                var idx = grid_idx(x, y, z);
-                                let new_idx = grid_idx(x, y - 1, z)
-                                if (grid_stopped[idx] == true) {
-                                    grid_stopped[idx] = false;
-                                    grid_cubes[new_idx].visible = false;
+                            let new_idx = grid_idx(x, y - 1, z)
+                            if (grid_stopped[idx] == true) {
+                                grid_stopped[idx] = false;
+                                grid_cubes[new_idx].visible = false;
 
-                                    grid_stopped[idx] = true;
-                                    grid_cubes[new_idx].visible = true;
-                                }
+                                grid_stopped[idx] = true;
+                                grid_cubes[new_idx].visible = true;
                             }
                         }
                     }
