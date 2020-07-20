@@ -457,7 +457,7 @@ function animate() {
             for (var y = 0; y < py; y++) {
                 for (var z = 0; z < pz; z++) {
                     if (p_cubes[p_idx(x, y, z)] == true) {
-                        let p = int_rotationY(x, y, z, rot);
+                        let p = int_rotationY(x, y, z, rotY);
                         p = int_rotationZ(p.x, p.y, p.z, rotZ);
                         p = int_rotationX(p.x, p.y, p.z, rotX);
                         g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
