@@ -453,9 +453,9 @@ function animate() {
     p_pos.x = px_maybe;
     p_pos.y = py_maybe;
     p_pos.z = pz_maybe;
-    //rotX = rot_maybex;
-    //rotY = rot_maybey;
-    //rotZ = rot_maybez;
+    rotX = rot_maybex;
+    rotY = rot_maybey;
+    rotZ = rot_maybez;
     // Update
     if (count % 5 == 0) {
         px_old = p_pos.x;
@@ -523,9 +523,9 @@ function animate() {
     p_pos.x = px_maybe;
     p_pos.y = py_maybe;
     p_pos.z = pz_maybe;
-    //rotX = rot_maybex;
-    //rotY = rot_maybey;
-    //rotZ = rot_maybez;
+    rotX = rot_maybex;
+    rotY = rot_maybey;
+    rotZ = rot_maybez;
 
     if (stop == true) {
         for (var x = 0; x < px; x++) {
