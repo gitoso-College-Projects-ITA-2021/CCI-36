@@ -479,7 +479,7 @@ function animate() {
     }
 
 
-    if (count > 10) {
+    if (count > 20) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
