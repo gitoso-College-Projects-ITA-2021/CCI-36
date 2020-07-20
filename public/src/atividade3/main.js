@@ -24,9 +24,9 @@ var gridHelper = new THREE.GridHelper(size, divisions);
 //scene.add(gridHelper);
 
 // Grid setup
-var gx = 9;
+var gx = 3;
 var gy = 15;
-var gz = 9;
+var gz = 3;
 var step = 20;
 var grid_size = gx * gy * gz;
 
@@ -318,7 +318,7 @@ function animate() {
     for (var x = 0; x < gx * 1; x += 1) {
         for (var y = 0; y < gy * 1; y += 1) {
             for (var z = 0; z < gz * 1; z += 1) {
-                var idx = grid_idx(x, y , z);
+                var idx = grid_idx(x, y, z);
                 if (grid_stopped[idx] == false) {
                     grid_cubes[idx].visible = false;
                 } else {
@@ -579,13 +579,13 @@ function animate() {
                 for (var yy = y + 1; yy < gy * 1; yy += 1) {
                     for (var x = 0; x < gx * 1; x += 1) {
                         for (var z = 0; z < gz * 1; z += 1) {
-                            var idx = grid_idx(x, y, z);
-                            let new_idx = grid_idx(x, y - 1, z)
+                            var idx = grid_idx(x, yy, z);
+                            let new_idx = grid_idx(x, yy - 1, z)
                             if (grid_stopped[idx] == true) {
                                 grid_stopped[idx] = false;
-                                grid_cubes[new_idx].visible = false;
+                                grid_cubes[idx].visible = false;
 
-                                grid_stopped[idx] = true;
+                                grid_stopped[new_idx] = true;
                                 grid_cubes[new_idx].visible = true;
                             }
                         }
