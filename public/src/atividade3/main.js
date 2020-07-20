@@ -32,26 +32,31 @@ var grid_size = gx * gy * gz;
 
 
 function grid_idx(x, y, z) {
-    return x + y * gx + z * gx * gy;
+    let xx = Math.round(x);
+    let yy = Math.round(y);
+    let zz = Math.round(z);
+    let idx =  (xx + yy * gx + zz * gx * gy);
+    return idx;
 }
 
 // Group 3D board
 var grid_cubes = new Array(grid_size);
 var group = new THREE.Group();
-for (var x = 0; x < gx * step; x += step) {
-    for (var y = 0; y < gy * step; y += step) {
-        for (var z = 0; z < gz * step; z += step) {
-            var idx = grid_idx(x, y, z);
-            var geom = new THREE.BoxGeometry(step - 0.1, step - 0.1, step - 0.1);
+for (var x = 0; x < gx  ; x += 1) {
+    for (var y = 0; y < gy  ; y += 1) {
+        for (var z = 0; z < gz  ; z += 1) {
+            var idx = grid_idx(x, y , z);
+            console.log(idx);
+            var geom = new THREE.BoxGeometry(step - 0.0, step - 0.0, step - 0.0);
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
             grid_cubes[idx] = new THREE.Mesh(geom, mat);
-            grid_cubes[idx].position.x = x;
-            grid_cubes[idx].position.y = y;
-            grid_cubes[idx].position.z = -z;
+            grid_cubes[idx].position.x = x * step;
+            grid_cubes[idx].position.y = y * step;
+            grid_cubes[idx].position.z = -z * step;
 
             group.add(grid_cubes[idx]);
-            grid_cubes[idx].visible = false;
+            grid_cubes[idx].visible = true;
         }
     }
 }
@@ -146,7 +151,7 @@ for (var x = 0; x < px; x++) {
         for (var z = 0; z < pz; z++) {
             var idx = grid_idx(x, y, z);
             if (p_cubes[p_idx(x, y, z)] == true) {
-                g_idx = grid_idx((p_pos.x + x) * step, (p_pos.y + y) * step, (p_pos.z + z) * step);
+                g_idx = grid_idx((p_pos.x + x) * 1, (p_pos.y + y) * 1, (p_pos.z + z) * 1);
                 grid_cubes[g_idx].visible = true;
             }
         }
@@ -224,6 +229,8 @@ function onMouseDown(event) {
 
 function onMouseMove( event ) {
 
+    mouse_old.x = mouse.x;
+    mouse_old.y = mouse.y;
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -237,34 +244,33 @@ function onMouseUp(event) {
 
 // esse bound check nao tah completo
 function bounded_pos(x, y, z) {
-    var px = x;
-    var py = y;
-    var pz = z;
+    var ppx = x;
+    var ppy = y;
+    var ppz = z;
     if (x > gx - 3) {
-        px = gx - 3;
+        ppx = gx - 3;
     }
     if (x < 0) {
-        px = 0;
+        ppx = 0;
     }
     if (y > gy - 3) {
-        py = gy - 3;
+        ppy = gy - 3;
     }
     if (y < 0) {
-        py = 0;
+        ppy = 0;
     }
     if (z > gz - 3) {
-        pz = gz - 3;
+        ppz = gz - 3;
     }
     if (z < 0) {
-        pz = 0;
+        ppz = 0;
     }
-    return { x: px, y: py, z: pz };
+    return { x: ppx, y: ppy, z: ppz };
 }
 
 // Input handling
 let key_pressed = false;
 let key_code = 0;
-let keymap = {Y: 89, U: 85};
 
 window.addEventListener('keypress', (e) => {
     key_pressed = true;
@@ -276,62 +282,82 @@ function animate() {
     raycaster.setFromCamera( mouse, camera );
     render()
 
-    for (var x = 0; x < gx * step; x += step) {
-        for (var y = 0; y < gy * step; y += step) {
-            for (var z = 0; z < gz * step; z += step) {
-                var idx = grid_idx(x, y, z);
+    for (var x = 0; x < gx * 1; x += 1) {
+        for (var y = 0; y < gy * 1; y += 1) {
+            for (var z = 0; z < gz * 1; z += 1) {
+                var idx = grid_idx(x, y , z);
                 grid_cubes[idx].visible = false;
             }
         }
     }
+
+    var move_object = true;
+    if (is_dragging == false)
+        move_object = false;
 
     var intersect_cubes = [];
     for (var x = 0; x < px; x++) {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    let p = int_rotationY(x, y, z, rot);
-                    g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
+                    //let p = int_rotationY(x, y, z, rot);
+                    let p = new THREE.Vector3(x, y, z);
+                    console.log(p_pos);
+                    console.log(delta);
+                    g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
                     grid_cubes[g_idx].visible = true;
+                    if (move_object == false)
+                        grid_cubes[g_idx].material.color.set(0x00ff00);
                     intersect_cubes.push(grid_cubes[g_idx]);
-                    grid_cubes[g_idx].material.color.set(0x00ff00);
                 }
             }
         }
     }
     var intersects = raycaster.intersectObjects( group.children );
-    var move_object = false;
     var first = false;
     for ( var i = 0; i < intersects.length; i++ ) {
         for (var l = 0; l < intersect_cubes.length; l++) {
             if (intersects[ i ].object == intersect_cubes[l]) { 
                 move_object = true;
+                //mouse_old.x = mouse_2.x;
+                //mouse_old.y = mouse_2.y;
+                //mouse_2.x = intersects[i].point.x;
+                //mouse_2.y = -intersects[i].point.z;
                 if (mouse_down == true)
                     is_dragging = true;
             }
         }
 
         if (first == false) {
-            mouse_old.x = mouse_2.x;
-            mouse_old.y = mouse_2.y;
-            mouse_2.x = intersects[i].object.position.x;
-            mouse_2.y = -intersects[i].object.position.z;
+            //mouse_old.x = mouse_2.x;
+            //mouse_old.y = mouse_2.y;
+            //mouse_2.x = intersects[intersects.length/2].point.x;
+            //mouse_2.y = -intersects[intersects.length/2].point.z;
             first = true;
         }
     }
-    if (move_object == true) {
+    if (move_object == true || is_dragging == true) {
         for (var l = 0; l < intersect_cubes.length; l++) {
             intersect_cubes[l].material.color.set(0xff0000);
         }
     }
-    delta.x = mouse_2.x - mouse_old.x;
-    delta.y = mouse_2.y - mouse_old.y;
-    console.log(delta);
+    //delta.x = mouse_2.x - mouse_old.x;
+    //delta.y = mouse_2.y - mouse_old.y;
+    delta.x = mouse.x - mouse_old.x;
+    delta.y = mouse.y - mouse_old.y;
+    let proj = new THREE.Vector3(delta.x, delta.y, 0.0);
+    let projector_normal = new THREE.Vector3(0, 1, 0);
+    projector_normal.project(camera);
+    proj.projectOnPlane(projector_normal);
+    //proj.projectOnPlane(new THREE.Vector3(0, 1, 0));
+    delta.x = proj.x;
+    delta.y = proj.z;
     if (is_dragging == true) {
-        var mul = 1.0;
+        var mulx = 0.1;
+        var muly = 0.1;
         delta.normalize();
-        p_pos.x += delta.x * mul;
-        p_pos.z += delta.y * mul;
+        p_pos.x += delta.x * mulx;
+        p_pos.z -= delta.y * muly;
     }
     console.log(move_object);
 
