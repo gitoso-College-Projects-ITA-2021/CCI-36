@@ -308,8 +308,8 @@ function animate() {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    //let p = int_rotationY(x, y, z, rot);
-                    let p = new THREE.Vector3(x, y, z);
+                    let p = int_rotationY(x, y, z, rot);
+                    //let p = new THREE.Vector3(x, y, z);
                     console.log(p_pos);
                     console.log(delta);
                     g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
