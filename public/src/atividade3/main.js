@@ -479,7 +479,7 @@ function animate() {
     }
 
 
-    if (count > 50) {
+    if (count > 10) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -513,6 +513,20 @@ function animate() {
                         rot_maybex = rot_oldX;
                         rot_maybey = rot_oldY;
                         rot_maybez = rot_oldZ;
+                    } else {
+                        let p = int_rotationY(x, y, z, rotY);
+                        p = int_rotationZ(p.x, p.y, p.z, rotZ);
+                        p = int_rotationX(p.x, p.y, p.z, rotX);
+                        let g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                        if (grid_stopped[g_idx] == true) {
+                            stop = true;
+                            px_maybe = px_old;
+                            py_maybe = py_old;
+                            pz_maybe = pz_old;
+                            rot_maybex = rot_oldX;
+                            rot_maybey = rot_oldY;
+                            rot_maybez = rot_oldZ;
+                        }
                     }
                     if (p_pos.y + p.y <= 0)
                         stop = true;
