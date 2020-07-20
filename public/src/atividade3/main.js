@@ -229,8 +229,8 @@ function onMouseDown(event) {
 
 function onMouseMove( event ) {
 
-    mouse_old.x = mouse.x;
-    mouse_old.y = mouse.y;
+    //mouse_old.x = mouse.x;
+    //mouse_old.y = mouse.y;
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -278,6 +278,15 @@ window.addEventListener('keypress', (e) => {
 });
 
 function animate() {
+var geom_plane = new THREE.PlaneGeometry( 100* gx * step, 100*  gz * step, 32 );
+geom_plane.rotateX(-Math.PI/2.0);
+//geom_plane.translate(new THREE.Vector3((gx - 1)*step/2,  0.0, -(gz - 1)*step/2))
+var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geom_plane, material );
+scene.add( plane );
+plane.visible = false;
+
+function animate() {  
     requestAnimationFrame(animate)
     raycaster.setFromCamera( mouse, camera );
     render()
@@ -343,21 +352,34 @@ function animate() {
     }
     //delta.x = mouse_2.x - mouse_old.x;
     //delta.y = mouse_2.y - mouse_old.y;
-    delta.x = mouse.x - mouse_old.x;
-    delta.y = mouse.y - mouse_old.y;
-    let proj = new THREE.Vector3(delta.x, delta.y, 0.0);
-    let projector_normal = new THREE.Vector3(0, 1, 0);
-    projector_normal.project(camera);
-    proj.projectOnPlane(projector_normal);
+    //let proj = new THREE.Vector3(delta.x, delta.y, 0.0);
+    //let projector_normal = new THREE.Vector3(0, 1, 0);
+    //projector_normal.project(camera);
+    //projector_normal.applyMatrix4(camera.projectionMatrixInverse);
+
+    //proj.projectOnPlane(projector_normal);
+    //proj.applyMatrix4(camera.projectionMatrixInverse);
+    //proj.applyMatrix4(camera.matrixWorld);
     //proj.projectOnPlane(new THREE.Vector3(0, 1, 0));
-    delta.x = proj.x;
-    delta.y = proj.z;
+
+    var inter_plane = raycaster.intersectObject( plane);
+    for ( var i = 0; i < inter_plane.length; i++ ) {
+            mouse_old.x = mouse_2.x;
+            mouse_old.y = mouse_2.y;
+            mouse_2.x = inter_plane[i].point.x;
+            mouse_2.y = -inter_plane[i].point.z;
+    }
+    //delta.x = proj.x;
+    //delta.y = proj.z;
+    delta.x = mouse_2.x - mouse_old.x;
+    delta.y = mouse_2.y - mouse_old.y;
+
     if (is_dragging == true) {
         var mulx = 0.1;
         var muly = 0.1;
         delta.normalize();
         p_pos.x += delta.x * mulx;
-        p_pos.z -= delta.y * muly;
+        p_pos.z += delta.y * muly;
     }
     console.log(move_object);
 
