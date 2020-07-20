@@ -41,6 +41,7 @@ function grid_idx(x, y, z) {
 
 // Group 3D board
 var grid_cubes = new Array(grid_size);
+var grid_stopped = new Array(grid_size);
 var group = new THREE.Group();
 for (var x = 0; x < gx  ; x += 1) {
     for (var y = 0; y < gy  ; y += 1) {
@@ -54,9 +55,10 @@ for (var x = 0; x < gx  ; x += 1) {
             grid_cubes[idx].position.x = x * step;
             grid_cubes[idx].position.y = y * step;
             grid_cubes[idx].position.z = -z * step;
+            grid_stopped[idx] = false;
 
             group.add(grid_cubes[idx]);
-            grid_cubes[idx].visible = true;
+            grid_cubes[idx].visible = false;
         }
     }
 }
@@ -294,7 +296,11 @@ function animate() {
         for (var y = 0; y < gy * 1; y += 1) {
             for (var z = 0; z < gz * 1; z += 1) {
                 var idx = grid_idx(x, y , z);
-                grid_cubes[idx].visible = false;
+                if (grid_stopped[idx] == false) {
+                    grid_cubes[idx].visible = false;
+                } else {
+                    grid_cubes[idx].visible = true;
+                }
             }
         }
     }
@@ -405,7 +411,7 @@ function animate() {
     }
 
 
-    if (count > 100) {
+    if (count > 10) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -416,7 +422,22 @@ function animate() {
     p_pos.x = pos.x;
     p_pos.y = pos.y;
     p_pos.z = pos.z;
-    if (p_pos.y == 0) p_pos.y = 11;
+    if (p_pos.y <= 0) {
+        p_pos.y = 0;
+        for (var x = 0; x < px; x++) {
+            for (var y = 0; y < py; y++) {
+                for (var z = 0; z < pz; z++) {
+                    if (p_cubes[p_idx(x, y, z)] == true) {
+                        let p = int_rotationY(x, y, z, rot);
+                        g_idx = grid_idx((p_pos.x + p.x) * 1, (p_pos.y + p.y) * 1, (p_pos.z + p.z) * 1);
+                        grid_stopped[g_idx] = true;
+                        grid_cubes[idx].visible = true;
+                    }
+                }
+            }
+        }
+        p_pos.y = 11;
+    }
 
     count += 1;
     count_rot += 1;
