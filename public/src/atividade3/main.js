@@ -285,10 +285,8 @@ function animate() {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    if (inputManager.keys.y.down) {
-                        let p = int_rotationY(x, y, z, rot);
-                        g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
-                    }
+                    let p = int_rotationY(x, y, z, rot);
+                    g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
                     grid_cubes[g_idx].visible = true;
                     intersect_cubes.push(grid_cubes[g_idx]);
                     grid_cubes[g_idx].material.color.set(0x00ff00);
@@ -345,10 +343,12 @@ function animate() {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
-        //p_pos.y -= 1;
+        p_pos.y -= 1;
         count = 1;
         rot_old = rot;
-        rot += 90;
+        if (inputManager.keys.y.down) {
+            rot += 90;
+        }
         count_rot = 1;
     }
     pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
