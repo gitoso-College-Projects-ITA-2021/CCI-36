@@ -27,6 +27,7 @@ var gridHelper = new THREE.GridHelper(size, divisions);
 var gx = 10;
 var gy = 15;
 var gz = 10;
+var step = 20;
 var grid_size = gx * gy * gz;
 
 
@@ -38,11 +39,11 @@ function grid_idx(x, y, z) {
 
 var grid_cubes = new Array(grid_size);
 var group = new THREE.Group();
-for (var x = 0; x < gx * 10; x += 10) {
-    for (var y = 0; y < gy * 10; y += 10) {
-        for (var z = 0; z < gz * 10; z += 10) {
+for (var x = 0; x < gx * step; x += step) {
+    for (var y = 0; y < gy * step; y += step) {
+        for (var z = 0; z < gz * step; z += step) {
             var idx = grid_idx(x, y , z);
-            var geom = new THREE.BoxGeometry(9.8, 9.8, 9.8);
+            var geom = new THREE.BoxGeometry(step - 0.2, step - 0.2, step - 0.2);
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
             grid_cubes[idx] = new THREE.Mesh(geom, mat);
@@ -56,13 +57,13 @@ for (var x = 0; x < gx * 10; x += 10) {
     }
 }
 scene.add(group);
-var geom = new THREE.BoxGeometry((gx - 1) * 10, (gy - 1) * 10, (gz - 1) * 10);
+var geom = new THREE.BoxGeometry((gx - 1) * step, (gy - 1) * step, (gz - 1) * step);
 var mat = new THREE.MeshPhongMaterial( {color: 0x000fff, opacity: 0.1, transparent: true} );
 
 grid_cube = new THREE.Mesh(geom, mat);
-grid_cube.position.x = (gx - 1)*10/2;
-grid_cube.position.y = (gy - 1)*10/2;
-grid_cube.position.z = -(gz - 1)*10/2;
+grid_cube.position.x = (gx - 1)*step/2;
+grid_cube.position.y = (gy - 1)*step/2;
+grid_cube.position.z = -(gz - 1)*step/2;
 scene.add(grid_cube);
 
 
@@ -93,9 +94,9 @@ let positions = [];
 //positions.push(p.y);
 //positions.push(p.z);
 //}
-for (var x = 0; x < gx * 10; x += 10) {
-    for (var y = 0; y < gy * 10; y += 10) {
-        for (var z = 0; z < gz * 10; z += 10) {
+for (var x = 0; x < gx * step; x += step) {
+    for (var y = 0; y < gy * step; y += step) {
+        for (var z = 0; z < gz * step; z += step) {
             positions.push(x);
             positions.push(y);
             positions.push(-z);
@@ -143,7 +144,7 @@ for (var x = 0; x < px; x++) {
         for (var z = 0; z < pz; z++) {
             var idx = grid_idx(x, y, z);
             if (p_cubes[p_idx(x, y, z)] == true) {
-                g_idx = grid_idx((p_pos.x + x) * 10, (p_pos.y + y) * 10, (p_pos.z + z) * 10);
+                g_idx = grid_idx((p_pos.x + x) * step, (p_pos.y + y) * step, (p_pos.z + z) * step);
                 grid_cubes[g_idx].visible = true;
             }
         }
@@ -151,7 +152,7 @@ for (var x = 0; x < px; x++) {
 }
 
 
-camera.position.set(300.0,  300.0, 300.0);
+camera.position.set(step * gy * 2, step * gy * 2 + 100, step * gy * 2);
 camera.lookAt(0.0, 0.0, 0.0);
 var controls = new THREE.FlyControls(camera, renderer.domElement)
 controls.domElement = renderer.domElement;
@@ -203,76 +204,132 @@ function int_rotationY(posx, posy, posz, rot) {
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
+var mouse_old = new THREE.Vector2();
+var mouse_2 = new THREE.Vector2();
+var delta = new THREE.Vector2();
+var inverse_matrix = new THREE.Matrix4();
+
+var is_moving = false;
+var is_dragging = false;
+var mouse_down = false;
+
+
+function onMouseDown(event) {
+    is_moving = true;
+    mouse_down = true;
+}
 
 function onMouseMove( event ) {
-
-    // calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both components
 
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
 
+function onMouseUp(event) {
+    is_moving = false;
+    is_dragging = false;
+    mouse_down = false;
+}
+
+// esse bound check nao tah completo
+function bounded_pos(x, y, z) {
+    var px = x;
+    var py = y;
+    var pz = z;
+    if (x > gx - 3) {
+        px = gx - 3;
+    }
+    if (x < 0) {
+        px = 0;
+    }
+    if (y > gy - 3) {
+        py = gy - 3;
+    }
+    if (y < 0) {
+        py = 0;
+    }
+    if (z > gz - 3) {
+        pz = gz - 3;
+    }
+    if (z < 0) {
+        pz = 0;
+    }
+    return { x: px, y: py, z: pz };
+}
+
 function animate() {  
     requestAnimationFrame(animate)
     raycaster.setFromCamera( mouse, camera );
     render()
-    //for (var x = 0; x < gx * 10; x += 10) {
-    //for (var y = 0; y < gy * 10; y += 10) {
-    //for (var z = 0; z < gz * 10; z += 10) {
-    //var idx = grid_idx(x, y , z);
-    //grid_cubes[idx].visible = false;
-    //}
-    //}
-    //}
+
+    for (var x = 0; x < gx * step; x += step) {
+        for (var y = 0; y < gy * step; y += step) {
+            for (var z = 0; z < gz * step; z += step) {
+                var idx = grid_idx(x, y , z);
+                grid_cubes[idx].visible = false;
+            }
+        }
+    }
+
     var intersect_cubes = [];
     for (var x = 0; x < px; x++) {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    //var pold = new THREE.Vector3(x, y, z);
-                    //pold.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot_old);
-                    //pold.x = Math.round(pold.x);
-                    //pold.y = Math.round(pold.y);
-                    //pold.z = Math.round(pold.z);
-                    let pold = int_rotationY(x, y, z, rot_old);
-                    g_idx = grid_idx((px_old + pold.x) * 10, (py_old + pold.y) * 10, (pz_old + pold.z) * 10);
-                    grid_cubes[g_idx].visible = false;
-                    //var p= new THREE.Vector3(x, y, z);
-                    //p.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
-                    //p.x = Math.round(p.x);
-                    //p.y = Math.round(p.y);
-                    //p.z = Math.round(p.z);
                     let p = int_rotationY(x, y, z, rot);
-                    g_idx = grid_idx((p_pos.x + p.x) * 10, (p_pos.y + p.y) * 10, (p_pos.z + p.z) * 10);
+                    g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
                     grid_cubes[g_idx].visible = true;
                     intersect_cubes.push(grid_cubes[g_idx]);
+                    grid_cubes[g_idx].material.color.set(0x00ff00);
                 }
             }
         }
     }
     var intersects = raycaster.intersectObjects( group.children );
     var move_object = false;
-	for ( var i = 0; i < intersects.length; i++ ) {
+    var first = false;
+    for ( var i = 0; i < intersects.length; i++ ) {
         for (var l = 0; l < intersect_cubes.length; l++) {
             if (intersects[ i ].object == intersect_cubes[l]) { 
-                intersects[ i ].object.material.color.set( 0xff0000 );
                 move_object = true;
+                if (mouse_down == true)
+                    is_dragging = true;
             }
-    }
+        }
 
-	}
+        if (first == false) {
+            mouse_old.x = mouse_2.x;
+            mouse_old.y = mouse_2.y;
+            mouse_2.x = intersects[i].object.position.x;
+            mouse_2.y = -intersects[i].object.position.z;
+            first = true;
+        }
+    }
+    if (move_object == true) {
+        for (var l = 0; l < intersect_cubes.length; l++) {
+            intersect_cubes[l].material.color.set(0xff0000);
+        }
+    }
+    delta.x = mouse_2.x - mouse_old.x;
+    delta.y = mouse_2.y - mouse_old.y;
+    console.log(delta);
+    if (is_dragging == true) {
+        var mul = 1.0;
+        delta.normalize();
+        p_pos.x += delta.x * mul;
+        p_pos.z += delta.y * mul;
+    }
     console.log(move_object);
 
     controls.movementSpeed = 500;
     controls.lookSpeed = 0.1;
     controls.update( dt );
 
-    //dt = (dt * count  + (Date.now() - last_time)/1000)/(count + 1);
     dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
     total = dt/2.0;
+
 
     if (count > 200) {
         px_old = p_pos.x;
@@ -284,9 +341,10 @@ function animate() {
         rot -= 90;
         count_rot = 1;
     }
-    if (p_pos.y <= 0) p_pos.y =0;
-
-    //tree_uniforms.time.value = total;
+    pos = bounded_pos(p_pos.x, p_pos.y, p_pos.z);
+    p_pos.x = pos.x;
+    p_pos.y = pos.y;
+    p_pos.z = pos.z;
 
     count += 1;
     count_rot += 1;
@@ -307,5 +365,7 @@ function render() {
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener( 'mousedown', onMouseDown, false);
 window.addEventListener( 'mousemove', onMouseMove, false );
+window.addEventListener( 'mouseup', onMouseUp, false);
 animate()
