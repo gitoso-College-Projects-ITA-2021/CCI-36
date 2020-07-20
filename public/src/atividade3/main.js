@@ -126,21 +126,18 @@ let lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial( {opaci
 scene.add(lines);
 // ----
 
-var px = 3;
-var py = 3;
-var pz = 3;
+var px = 4;
+var py = 4;
+var pz = 4;
 var p_size = px * py * pz;
+
+var p_cubes = objects(3, p_size);
 
 function p_idx(x, y, z) {
     return Math.floor(x + y * px + z * px * py);
 }
 
-var p_cubes = new Array(p_size);
-p_cubes[p_idx(0, 0, 0)] = true;
-p_cubes[p_idx(1, 0, 0)] = true;
-p_cubes[p_idx(0, 1, 0)] = true;
-p_cubes[p_idx(0, 0, 1)] = true;
-var p_pos = new THREE.Vector3(2, 13, 4);
+var p_pos = new THREE.Vector3(5, 15, 5);
 for (var x = 0; x < px; x++) {
     for (var y = 0; y < py; y++) {
         for (var z = 0; z < pz; z++) {
