@@ -7,6 +7,9 @@ var renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio( window.devicePixelRatio );
 
+// Input
+const inputManager = new InputManager();
+
 
 var scene = new THREE.Scene()
 
@@ -24,6 +27,7 @@ var divisions = 10;
 var gridHelper = new THREE.GridHelper(size, divisions);
 //scene.add(gridHelper);
 
+// Grid setup
 var gx = 10;
 var gy = 15;
 var gz = 10;
@@ -35,14 +39,13 @@ function grid_idx(x, y, z) {
     return x + y * gx + z * gx * gy;
 }
 
-
-
+// Group 3D board
 var grid_cubes = new Array(grid_size);
 var group = new THREE.Group();
 for (var x = 0; x < gx * step; x += step) {
     for (var y = 0; y < gy * step; y += step) {
         for (var z = 0; z < gz * step; z += step) {
-            var idx = grid_idx(x, y , z);
+            var idx = grid_idx(x, y, z);
             var geom = new THREE.BoxGeometry(step - 0.1, step - 0.1, step - 0.1);
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
@@ -57,13 +60,14 @@ for (var x = 0; x < gx * step; x += step) {
     }
 }
 scene.add(group);
+
 var geom = new THREE.BoxGeometry((gx - 1) * step, (gy - 1) * step, (gz - 1) * step);
 var mat = new THREE.MeshPhongMaterial( {color: 0x000fff, opacity: 0.1, transparent: true} );
 
 grid_cube = new THREE.Mesh(geom, mat);
-grid_cube.position.x = (gx - 1)*step/2;
-grid_cube.position.y = (gy - 1)*step/2;
-grid_cube.position.z = -(gz - 1)*step/2;
+grid_cube.position.x = (gx - 1) * step / 2;
+grid_cube.position.y = (gy - 1) * step / 2;
+grid_cube.position.z =  - (gz - 1) * step / 2;
 //scene.add(grid_cube);
 
 // Melhor ser impar pra ter um centro inteiro
@@ -91,6 +95,7 @@ function mapFrom3D(x, y, z) {
     return x + y * xSize + z * xSize * ySize;
 }
 
+// 3D-Board geometry
 let positions = [];
 //for (let i = 0; i < n; i++) {
 //let p = mapTo3D(i);
@@ -101,9 +106,9 @@ let positions = [];
 for (var x = 0; x < gx * step; x += step) {
     for (var y = 0; y < gy * step; y += step) {
         for (var z = 0; z < gz * step; z += step) {
-            positions.push(x - step/2);
-            positions.push(y - step/2);
-            positions.push(-z + step/2);
+            positions.push(x - step / 2);
+            positions.push(y - step / 2);
+            positions.push(- z + step / 2);
         }
     }
 }
@@ -263,12 +268,13 @@ function bounded_pos(x, y, z) {
 function animate() {  
     requestAnimationFrame(animate)
     raycaster.setFromCamera( mouse, camera );
+    inputManager.update()
     render()
 
     for (var x = 0; x < gx * step; x += step) {
         for (var y = 0; y < gy * step; y += step) {
             for (var z = 0; z < gz * step; z += step) {
-                var idx = grid_idx(x, y , z);
+                var idx = grid_idx(x, y, z);
                 grid_cubes[idx].visible = false;
             }
         }
@@ -279,8 +285,10 @@ function animate() {
         for (var y = 0; y < py; y++) {
             for (var z = 0; z < pz; z++) {
                 if (p_cubes[p_idx(x, y, z)] == true) {
-                    let p = int_rotationY(x, y, z, rot);
-                    g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
+                    if (inputManager.keys.y.down) {
+                        let p = int_rotationY(x, y, z, rot);
+                        g_idx = grid_idx((p_pos.x + p.x) * step, (p_pos.y + p.y) * step, (p_pos.z + p.z) * step);
+                    }
                     grid_cubes[g_idx].visible = true;
                     intersect_cubes.push(grid_cubes[g_idx]);
                     grid_cubes[g_idx].material.color.set(0x00ff00);
@@ -330,14 +338,14 @@ function animate() {
 
     dt = (Date.now() - last_time)/1000;
     last_time = Date.now();
-    total = dt/2.0;
+    total = dt / 2.0;
 
 
     if (count > 50) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
-        p_pos.y -= 1;
+        //p_pos.y -= 1;
         count = 1;
         rot_old = rot;
         rot += 90;
