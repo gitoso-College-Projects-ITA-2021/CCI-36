@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Skybox Exporter</title>
+    <title>Tetris 3D</title>
     <meta charset="utf-8">
     <!-- Lib Imports -->
     <script src="lib/three.js"></script>
@@ -13,14 +13,15 @@
     <script src="lib/FirstPersonControls.js"></script>
     <script src="lib/OBJLoader.js"></script>
     <script src="lib/MTLLoader.js"></script>
+    <script src="lib/GLTFLoader.js"></script>
     <script src="lib/dat.gui.min.js"></script>
     <script src="lib/water.js"></script>
     <link rel="stylesheet" href="style.css">
     <link type="text/css" rel="stylesheet" href="main.css">
 </head>
 <body>
-    <div id="info">Skybox Exporter<br/>
-    <b>WASD</b> move, <b>R|F</b> up | down, <b>Q|E</b> roll, <b>up|down</b> pitch, <b>left|right</b> yaw
+    <div id="info">Tetris 3D<br/>
+    <b>Y|U|I:</b> Rotate block, <b>L-Click:</b> Drag block, <b>R-Click:</b> Rotate camera
     </div>
     <canvas id="main-canvas"></canvas>
     <!-- Code Imports -->

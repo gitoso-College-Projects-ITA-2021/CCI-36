@@ -23,6 +23,16 @@ var divisions = 10;
 var gridHelper = new THREE.GridHelper(size, divisions);
 //scene.add(gridHelper);
 
+var loader = new THREE.GLTFLoader();
+var arcade_scene=null;
+var url = 'assets/Arcade.glb';
+
+loader.load( url, function ( obj ) {
+    trooper = obj.scene;
+    trooper.scale.set(300, 300, 300);
+    scene.add(trooper);
+});
+
 // Grid setup
 var gx = 5;
 var gy = 15;
