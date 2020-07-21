@@ -6,14 +6,16 @@ var renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio( window.devicePixelRatio );
-
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+renderer.outputEncoding = THREE.sRGBEncoding;
 var scene = new THREE.Scene()
 
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1.1, 15000);
 
 var loader = new THREE.TextureLoader()
 
-var light = new THREE.PointLight( 0xffffff, 1, 0 );
+var light = new THREE.PointLight( 0xffffff, 0.3, 0 );
 light.position.set( 200, 200, 200);
 scene.add( light );
 //scene.fog = new THREE.Fog( 0xcce0ff, 500, 1000 );
