@@ -311,7 +311,7 @@ var plane = new THREE.Mesh( geom_plane, material );
 scene.add( plane );
 plane.visible = false;
 
-level = 7
+level = 100
 
 function animate() {  
     requestAnimationFrame(animate)
@@ -482,7 +482,7 @@ function animate() {
     }
 
 
-    if (count > 600/level) {
+    if (count > 100*50/level) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -576,7 +576,7 @@ function animate() {
                 }
             }
             if (slice_full == true) {
-                level++;
+                level+=10;
                 for (var x = 0; x < gx * 1; x += 1) {
                     for (var z = 0; z < gz * 1; z += 1) {
                         var idx = grid_idx(x, y, z);
