@@ -52,9 +52,9 @@ for (var x = 0; x < gx  ; x += 1) {
             var mat = new THREE.MeshPhongMaterial( {color: 0x00ff00} );
 
             grid_cubes[idx] = new THREE.Mesh(geom, mat);
-            grid_cubes[idx].position.x = x * step;
+            grid_cubes[idx].position.x = x * step - gx * step / 2;
             grid_cubes[idx].position.y = y * step;
-            grid_cubes[idx].position.z = -z * step;
+            grid_cubes[idx].position.z = -z * step + gz * step / 2;
             grid_stopped[idx] = false;
 
             group.add(grid_cubes[idx]);
@@ -109,9 +109,9 @@ let positions = [];
 for (var x = 0; x < gx+1; x++) {
     for (var y = 0; y < gy+1; y++) {
         for (var z = 0; z < gz+1; z++) {
-            positions.push(x*step - step / 2);
+            positions.push(x*step - gx * step / 2 - step / 2);
             positions.push(y*step - step / 2);
-            positions.push(- z*step + step / 2);
+            positions.push(-z*step + gz * step / 2 + step / 2);
         }
     }
 }
