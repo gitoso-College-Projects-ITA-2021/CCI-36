@@ -311,6 +311,8 @@ var plane = new THREE.Mesh( geom_plane, material );
 scene.add( plane );
 plane.visible = false;
 
+level = 7
+
 function animate() {  
     requestAnimationFrame(animate)
     raycaster.setFromCamera( mouse, camera );
@@ -480,7 +482,7 @@ function animate() {
     }
 
 
-    if (count > 50) {
+    if (count > 600/level) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
@@ -560,7 +562,7 @@ function animate() {
         p_pos.y = 11;
         p_pos.x = Math.floor(gx/2);
         p_pos.z = Math.floor(gz/2);
-        let piece = Math.floor((Math.random()*7));
+        let piece = Math.floor((Math.random()*level));
         p_cubes = objects(piece, p_size);
 
         for (var y = 0; y < gy * 1; y += 1) {
@@ -574,6 +576,7 @@ function animate() {
                 }
             }
             if (slice_full == true) {
+                level++;
                 for (var x = 0; x < gx * 1; x += 1) {
                     for (var z = 0; z < gz * 1; z += 1) {
                         var idx = grid_idx(x, y, z);
