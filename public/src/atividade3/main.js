@@ -9,7 +9,7 @@ renderer.setPixelRatio( window.devicePixelRatio );
 
 var scene = new THREE.Scene()
 
-var camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.1, 15000);
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1.1, 15000);
 
 var loader = new THREE.TextureLoader()
 
@@ -29,7 +29,7 @@ var url = 'assets/Arcade.glb';
 
 loader.load( url, function ( obj ) {
     trooper = obj.scene;
-    trooper.scale.set(300, 300, 300);
+    trooper.scale.set(100, 100, 100);
     scene.add(trooper);
 });
 
