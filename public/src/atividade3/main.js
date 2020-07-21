@@ -37,7 +37,7 @@ loader.load( url, function ( obj ) {
 var gx = 5;
 var gy = 15;
 var gz = 5;
-var step = 20;
+var step = 50;
 var grid_size = gx * gy * gz;
 
 
@@ -145,7 +145,7 @@ for (let i = 0; i < n; i++) {
     }
 }
 geometry.setIndex(indexPairs);
-let lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial( {opacity : 0.1, transparent: true} ));
+let lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial( {color: 0x8888ff, opacity : 0.4, transparent: true} ));
 scene.add(lines);
 // ----
 
