@@ -161,13 +161,14 @@ for (var x = 0; x < px; x++) {
 }
 
 
-camera.position.set(step * gy * 2, step * gy * 2 + 100, step * gy * 2);
-camera.lookAt(0.0, 0.0, 0.0);
-var controls = new THREE.FlyControls(camera, renderer.domElement)
-controls.domElement = renderer.domElement;
-controls.rollSpeed = Math.PI / 24;
-controls.autoForward = false;
-controls.dragToLook = true;
+camera.position.set(step * gy * 2, step * gy * 2 + 400, step * gy * 2);
+camera.lookAt(0.0, gy/2, 0.0);
+//var controls = new THREE.FlyControls(camera, renderer.domElement)
+var controls = new THREE.OrbitControls(camera, renderer.domElement)
+//controls.domElement = renderer.domElement;
+//controls.rollSpeed = Math.PI / 24;
+//controls.autoForward = false;
+//controls.dragToLook = true;
 
 
 var last_time = 0.0;
@@ -479,7 +480,7 @@ function animate() {
     }
 
 
-    if (count > 10) {
+    if (count > 50) {
         px_old = p_pos.x;
         py_old = p_pos.y;
         pz_old = p_pos.z;
